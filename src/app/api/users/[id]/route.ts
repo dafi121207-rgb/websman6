@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { requireRole } from "@/lib/auth";
 
@@ -11,6 +12,14 @@ export async function DELETE(_req: NextRequest, ctx: Ctx) {
   if (id === admin.id) {
     return NextResponse.json({ error: "Tidak dapat menghapus akun sendiri" }, { status: 400 });
   }
-  await prisma.user.delete({ where: { id } });
+  try {
+    await prisma.user.delete({ where: { id } });
+  } catch (e) {
+    // P2025 = record tidak ditemukan (akun sudah dihapus / id salah).
+    if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2025") {
+      return NextResponse.json({ error: "Akun tidak ditemukan" }, { status: 404 });
+    }
+    throw e;
+  }
   return NextResponse.json({ ok: true });
 }
