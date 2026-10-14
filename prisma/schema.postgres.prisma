@@ -1,0 +1,204 @@
+// =============================================================
+//  SMAN 6 GARUT — LMS PJOK · Prisma Schema UNTUK SUPABASE (Postgres)
+//  Cara migrasi dari SQLite ke Supabase:
+//  1. Buat project di supabase.com, salin connection string.
+//  2. Ganti DATABASE_URL=".env" ke: postgresql://user:pass@host:6543/postgres?pgbouncer=true
+//  3. Ganti nama file: cp prisma/schema.postgres.prisma prisma/schema.prisma
+//  4. npx prisma migrate dev --name init-supabase
+//  5. npm run seed
+// =============================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  GURU
+  SISWA
+}
+
+enum AttendanceStatus {
+  HADIR
+  IZIN
+  SAKIT
+  ALPA
+}
+
+enum SubmissionStatus {
+  PENDING
+  GRADED
+  REJECTED
+}
+
+model User {
+  id         String   @id @default(uuid())
+  identifier String   @unique // NISN untuk Siswa, NIP untuk Guru, Username untuk Admin
+  name       String
+  email      String?  @unique
+  password   String
+  role       Role     @default(SISWA)
+  avatarUrl  String?
+  kelas      String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  attendances    Attendance[]
+  submissions    Submission[]
+  quizAttempts   QuizAttempt[]
+  createdQuizzes Quiz[]        @relation("TeacherQuizzes")
+
+  @@map("users")
+}
+
+model SchoolProfile {
+  id          String   @id @default("sman6garut")
+  title       String   @default("SMAN 6 GARUT")
+  email       String   @default("sman_6garut@yahoo.co.id")
+  phone       String   @default("231509")
+  tagline     String   @default("MANDIRI, KOMPETITIF, DAN BERWAWASAN LINGKUNGAN")
+  welcomeText String   @db.Text
+  vision      String   @db.Text
+  mission     Json // Array 6 poin Misi SMAN 6 Garut
+  updatedAt   DateTime @updatedAt
+
+  @@map("school_profiles")
+}
+
+model News {
+  id         String   @id @default(uuid())
+  title      String
+  slug       String   @unique
+  content    String   @db.Text
+  coverImage String?
+  published  Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("news")
+}
+
+model Module {
+  id            String @id @default(uuid())
+  title         String
+  category      String
+  description   String @db.Text
+  videoUrl      String?
+  pdfUrl        String?
+  order         Int    @default(1)
+  createdAt     DateTime @default(now())
+
+  quizzes     Quiz[]
+  assignments Assignment[]
+
+  @@map("modules")
+}
+
+model AttendanceSession {
+  id              String   @id @default(uuid())
+  title           String
+  kelas           String
+  date            DateTime @default(now())
+  isOpen          Boolean  @default(true)
+  targetLat       Float?
+  targetLng       Float?
+  maxRadiusMeters Float    @default(100.0)
+
+  attendances Attendance[]
+
+  @@map("attendance_sessions")
+}
+
+model Attendance {
+  id         String           @id @default(uuid())
+  sessionId  String
+  userId     String
+  status     AttendanceStatus @default(HADIR)
+  photoProof String?
+  userLat    Float?
+  userLng    Float?
+  createdAt  DateTime         @default(now())
+
+  session AttendanceSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  user    User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, userId])
+  @@map("attendances")
+}
+
+model Quiz {
+  id          String @id @default(uuid())
+  moduleId    String
+  teacherId   String
+  title       String
+  durationMin Int    @default(30)
+  passScore   Int    @default(75)
+
+  module    Module        @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  teacher   User          @relation("TeacherQuizzes", fields: [teacherId], references: [id])
+  questions Question[]
+  attempts  QuizAttempt[]
+
+  @@map("quizzes")
+}
+
+model Question {
+  id            String  @id @default(uuid())
+  quizId        String
+  questionText  String  @db.Text
+  options       Json // Array pilihan jawaban
+  correctAnswer Int
+  explanation   String? @db.Text
+
+  quiz Quiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
+
+  @@map("questions")
+}
+
+model QuizAttempt {
+  id        String   @id @default(uuid())
+  quizId    String
+  userId    String
+  score     Float
+  isPassed  Boolean
+  createdAt DateTime @default(now())
+
+  quiz Quiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([quizId, userId])
+  @@map("quiz_attempts")
+}
+
+model Assignment {
+  id          String   @id @default(uuid())
+  moduleId    String
+  title       String
+  instruction String   @db.Text
+  dueDate     DateTime
+
+  submissions Submission[]
+
+  @@map("assignments")
+}
+
+model Submission {
+  id           String           @id @default(uuid())
+  assignmentId String
+  userId       String
+  mediaUrl     String
+  notes        String?          @db.Text
+  score        Float?
+  status       SubmissionStatus @default(PENDING)
+  createdAt    DateTime         @default(now())
+
+  assignment Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("submissions")
+}

@@ -1,0 +1,163 @@
+// =============================================================
+//  SMAN 6 GARUT — LMS PJOK · Prisma Schema (SQLite local dev)
+//  Catatan migrasi ke Supabase: gunakan prisma/schema.postgres.prisma
+//  (versi ini mengganti enum -> string & String[] -> JSON string
+//   karena keterbatasan SQLite; Postgres memakai versi native)
+// =============================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  identifier   String   @unique // NISN untuk Siswa, NIP untuk Guru, Username untuk Admin
+  name         String
+  email        String?
+  password     String
+  role         String   @default("SISWA") // ADMIN | GURU | SISWA
+  avatarUrl    String?
+  kelas        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  attendances    Attendance[]
+  submissions    Submission[]
+  quizAttempts   QuizAttempt[]
+  createdQuizzes Quiz[]        @relation("TeacherQuizzes")
+}
+
+model SchoolProfile {
+  id          String   @id @default("sman6garut")
+  title       String   @default("SMAN 6 GARUT")
+  email       String   @default("sman_6garut@yahoo.co.id")
+  phone       String   @default("231509")
+  tagline     String   @default("MANDIRI, KOMPETITIF, DAN BERWAWASAN LINGKUNGAN")
+  welcomeText String
+  vision      String
+  mission     String // JSON array — 6 poin Misi SMAN 6 Garut
+  updatedAt   DateTime @updatedAt
+}
+
+model News {
+  id         String   @id @default(uuid())
+  title      String
+  slug       String   @unique
+  content    String
+  coverImage String?
+  published  Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Module {
+  id          String @id @default(uuid())
+  title       String
+  category    String // e.g. "Bola Besar", "Atletik", "Kebugaran"
+  description String
+  videoUrl    String?
+  pdfUrl      String?
+  order       Int    @default(1)
+  createdAt   DateTime @default(now())
+
+  quizzes     Quiz[]
+  assignments Assignment[]
+}
+
+model AttendanceSession {
+  id              String   @id @default(uuid())
+  title           String
+  kelas           String
+  date            DateTime @default(now())
+  isOpen          Boolean  @default(true)
+  targetLat       Float?
+  targetLng       Float?
+  maxRadiusMeters Float    @default(100.0)
+
+  attendances Attendance[]
+}
+
+model Attendance {
+  id         String @id @default(uuid())
+  sessionId  String
+  userId     String
+  status     String @default("HADIR") // HADIR | IZIN | SAKIT | ALPA
+  photoProof String?
+  userLat    Float?
+  userLng    Float?
+  createdAt  DateTime @default(now())
+
+  session AttendanceSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  user    User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, userId])
+}
+
+model Quiz {
+  id          String @id @default(uuid())
+  moduleId    String
+  teacherId   String
+  title       String
+  durationMin Int    @default(30)
+  passScore   Int    @default(75)
+
+  module    Module        @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  teacher   User          @relation("TeacherQuizzes", fields: [teacherId], references: [id])
+  questions Question[]
+  attempts  QuizAttempt[]
+}
+
+model Question {
+  id            String  @id @default(uuid())
+  quizId        String
+  questionText  String
+  options       String // JSON array pilihan jawaban
+  correctAnswer Int // Index jawaban benar (0-3)
+  explanation   String?
+
+  quiz Quiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
+}
+
+model QuizAttempt {
+  id        String   @id @default(uuid())
+  quizId    String
+  userId    String
+  score     Float
+  isPassed  Boolean
+  createdAt DateTime @default(now())
+
+  quiz Quiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([quizId, userId])
+}
+
+  model Assignment {
+  id          String   @id @default(uuid())
+  moduleId    String
+  title       String
+  instruction String
+  dueDate     DateTime
+
+  module      Module     @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  submissions Submission[]
+}
+
+model Submission {
+  id           String  @id @default(uuid())
+  assignmentId String
+  userId       String
+  mediaUrl     String
+  notes        String?
+  score        Float?
+  status       String  @default("PENDING") // PENDING | GRADED | REJECTED
+  createdAt    DateTime @default(now())
+
+  assignment Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+}

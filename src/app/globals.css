@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+:root {
+  --canvas: #F5F3EF;
+  --ink: #0f172a;
+  --royal: #2563eb;
+  --emerald: #059669;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--canvas);
+  color: var(--ink);
+  font-feature-settings: "ss01", "cv01";
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- Ethereal Glass Shell (outer) ---- */
+.glass-shell {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 2rem;
+  padding: 0.5rem;
+  box-shadow:
+    0 1px 0 0 rgb(255 255 255 / 0.8) inset,
+    0 8px 32px -8px rgb(15 23 42 / 0.08);
+}
+
+/* ---- Soft Structuralism inner core ---- */
+.bezel-core {
+  background: #ffffff;
+  border-radius: 1.5rem;
+  box-shadow: 0 1px 3px rgb(15 23 42 / 0.04);
+}
+
+.dark .glass-shell {
+  background: rgba(2, 6, 23, 0.6);
+}
+.dark .bezel-core {
+  background: #020617;
+}
+
+/* ---- Standard button active scale ---- */
+button:active, a:active {
+  transition: transform 0.1s ease;
+}
+
+.pjok-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+.pjok-btn-inner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: inherit;
+}
+
+/* ---- Hover glow pour bento misi ---- */
+.misi-card {
+  transition:
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.3s ease;
+}
+.misi-card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 12px 32px -8px rgb(37 99 235 / 0.25),
+    0 0 0 1px rgb(37 99 235 / 0.2);
+}
+
+/* ---- Subtle kinetic background orbits ---- */
+.kinetic-blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(80px);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+@keyframes floaty {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+}
+.animate-floaty { animation: floaty 6s ease-in-out infinite; }
+
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgb(37 99 235 / 0.35); }
+  70% { box-shadow: 0 0 0 16px rgb(37 99 235 / 0); }
+  100% { box-shadow: 0 0 0 0 rgb(37 99 235 / 0); }
+}
+.animate-pulse-ring { animation: pulse-ring 2s infinite; }
