@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Plus, Save, Trash2, XCircle } from "lucide-react";
 import { Badge, DoubleBezel, PrimaryButton } from "@/components/ui";
+import ImportSiswa from "./ImportSiswa";
 
 type U = { id: string; identifier: string; name: string; role: string; kelas: string | null; createdAt: string };
 
@@ -59,11 +60,13 @@ export default function PenggunaClient({ initial }: { initial: U[] }) {
 
   return (
     <div className="space-y-3">
-      {!open ? (
+      <div className="flex flex-wrap gap-2">
         <PrimaryButton icon={Plus} onClick={() => setOpen(true)}>
           Tambah Akun
         </PrimaryButton>
-      ) : (
+        <ImportSiswa />
+      </div>
+      {open && (
         <DoubleBezel>
           <div className="flex items-center justify-between">
             <h3 className="font-extrabold">Akun Baru</h3>

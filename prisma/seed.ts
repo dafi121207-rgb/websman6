@@ -55,40 +55,8 @@ async function main() {
     },
   });
 
-  const siswa = await prisma.user.upsert({
-    where: { identifier: "0031234567" },
-    update: {},
-    create: {
-      identifier: "0031234567",
-      name: "Rizky Ramadhan",
-      password: hash("siswa123"),
-      role: "SISWA",
-      kelas: "X-1",
-    },
-  });
-
-  const rosterX1 = [
-    { id: "0031234568", name: "Alya Nurul Fauziah" },
-    { id: "0031234569", name: "Dimas Pratama" },
-    { id: "0031234570", name: "Farhan Maulana Yusuf" },
-    { id: "0031234571", name: "Siti Rahma Anindya" },
-    { id: "0031234572", name: "Yoga Aditya Nugraha" },
-  ];
-
-  for (const s of rosterX1) {
-    await prisma.user.upsert({
-      where: { identifier: s.id },
-      update: {},
-      create: {
-        identifier: s.id,
-        name: s.name,
-        password: hash("siswa123"),
-        role: "SISWA",
-        kelas: "X-1",
-      },
-    });
-  }
-
+  // Akun siswa TIDAK dibuat di seed. Daftar siswa XII-3 yang asli diimpor
+  // lewat `npm run import:siswa -- "ABSENSI XII-3.xlsx" --replace`.
   await prisma.news.upsert({
     where: { slug: "lomba-lari-17-agustus" },
     update: {},
@@ -144,9 +112,9 @@ async function main() {
     where: { id: "sesi-lapangan-x1" },
     update: {},
     create: {
-      id: "sesi-lapangan-x1",
-      title: "Absensi PJOK Kelas X-1 — Lapangan Utama",
-      kelas: "X-1",
+      id: "sesi-lapangan-xii3",
+      title: "Absensi PJOK Kelas XII-3 — Lapangan Utama",
+      kelas: "XII-3",
       isOpen: true,
       targetLat: -7.2278,
       targetLng: 107.9087,
@@ -225,8 +193,8 @@ async function main() {
     },
   });
 
-  console.log({ admin, guru, siswa, quiz1, assignment });
-  console.log("✅ Seed selesai!");
+  console.log({ admin, guru, quiz1, assignment });
+  console.log("✅ Seed selesai! (akun siswa diimpor terpisah lewat npm run import:siswa)");
 }
 
 main()
