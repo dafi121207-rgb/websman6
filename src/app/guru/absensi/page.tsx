@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { Badge } from "@/components/ui";
 import AbsensiManager from "./AbsensiManager";
+import { signMediaReferences } from "@/lib/supabase-storage";
 
 export const dynamic = "force-dynamic";
 
@@ -21,6 +22,12 @@ export default async function GuruAbsensi() {
       select: { id: true, name: true, identifier: true, kelas: true },
     }),
   ]);
+  const photoUrls = await signMediaReferences(
+    sessions.flatMap((session) =>
+      session.attendances.map((attendance) => attendance.photoProof),
+    ),
+  );
+  let photoIndex = 0;
 
   return (
     <div className="space-y-5">
@@ -51,7 +58,7 @@ export default async function GuruAbsensi() {
             status: a.status,
             userLat: a.userLat,
             userLng: a.userLng,
-            photoProof: a.photoProof,
+            photoProof: photoUrls[photoIndex++],
             createdAt: a.createdAt.toISOString(),
             userName: a.user.name,
             userKelas: a.user.kelas,

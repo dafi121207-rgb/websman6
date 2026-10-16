@@ -3,8 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "prisma generate && next build",
+    "dev": "prisma generate --schema=prisma/schema.postgres.prisma && next dev",
+    "build": "prisma generate --schema=prisma/schema.postgres.prisma && next build",
+    "db:deploy": "prisma migrate deploy --config=prisma.postgres.config.ts",
+    "db:import-sqlite": "prisma generate --schema=prisma/schema.prisma && prisma generate --schema=prisma/schema.postgres.prisma && tsx prisma/migrate-sqlite-to-postgres.ts",
+    "vercel-build": "npm run db:deploy && npm run build",
     "start": "next start",
     "seed": "tsx prisma/seed.ts",
     "import:siswa": "tsx prisma/import-siswa.ts",
@@ -12,7 +15,9 @@
   },
   "dependencies": {
     "@prisma/client": "^6.5.0",
+    "@supabase/supabase-js": "2.118.0",
     "bcryptjs": "^2.4.3",
+    "dotenv": "16.6.1",
     "exceljs": "^4.4.0",
     "gsap": "^3.15.0",
     "jose": "^5.9.6",

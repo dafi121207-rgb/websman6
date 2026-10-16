@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { AlertTriangle, Camera, CheckCircle2, Crosshair, Send } from "lucide-react";
 import { Badge, DoubleBezel, PrimaryButton, statusBadgeTone } from "@/components/ui";
+import { uploadPrivateMedia } from "@/lib/upload-media";
 
 type SessionDTO = {
   id: string;
@@ -101,6 +102,14 @@ export default function AttendanceClient({ sessions }: { sessions: SessionDTO[] 
     setOkMsg(null);
     setStatus("submitting");
     try {
+      const photoBlob = await fetch(photo).then((response) => response.blob());
+      const photoFile = new File([photoBlob], "attendance-selfie.jpg", {
+        type: "image/jpeg",
+      });
+      const storagePath = await uploadPrivateMedia(photoFile, {
+        purpose: "attendance",
+        sessionId,
+      });
       const res = await fetch("/api/attendance/check-in", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -108,7 +117,7 @@ export default function AttendanceClient({ sessions }: { sessions: SessionDTO[] 
           sessionId,
           userLat: coords.lat,
           userLng: coords.lng,
-          photoProof: photo,
+          storagePath,
         }),
       });
       const data = await res.json();

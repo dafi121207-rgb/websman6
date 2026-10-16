@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { requireRole } from "@/lib/auth";
+import { signMediaReferences } from "@/lib/supabase-storage";
 
 export async function GET() {
   const session = await requireRole(["SISWA", "GURU", "ADMIN"]);
@@ -27,7 +28,21 @@ export async function GET() {
       },
     },
   });
-  return NextResponse.json({ sessions });
+  const photoUrls = await signMediaReferences(
+    sessions.flatMap((attendanceSession) =>
+      attendanceSession.attendances.map((attendance) => attendance.photoProof),
+    ),
+  );
+  let photoIndex = 0;
+  return NextResponse.json({
+    sessions: sessions.map((attendanceSession) => ({
+      ...attendanceSession,
+      attendances: attendanceSession.attendances.map((attendance) => ({
+        ...attendance,
+        photoProof: photoUrls[photoIndex++],
+      })),
+    })),
+  });
 }
 
 export async function POST(req: NextRequest) {

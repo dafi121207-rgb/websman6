@@ -15,34 +15,16 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-}
-
-enum Role {
-  ADMIN
-  GURU
-  SISWA
-}
-
-enum AttendanceStatus {
-  HADIR
-  IZIN
-  SAKIT
-  ALPA
-}
-
-enum SubmissionStatus {
-  PENDING
-  GRADED
-  REJECTED
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
   id         String   @id @default(uuid())
   identifier String   @unique // NISN untuk Siswa, NIP untuk Guru, Username untuk Admin
   name       String
-  email      String?  @unique
+  email      String?
   password   String
-  role       Role     @default(SISWA)
+  role       String   @default("SISWA")
   avatarUrl  String?
   kelas      String?
   createdAt  DateTime @default(now())
@@ -64,7 +46,7 @@ model SchoolProfile {
   tagline     String   @default("MANDIRI, KOMPETITIF, DAN BERWAWASAN LINGKUNGAN")
   welcomeText String   @db.Text
   vision      String   @db.Text
-  mission     Json // Array 6 poin Misi SMAN 6 Garut
+  mission     String   @db.Text // JSON array, same representation as SQLite
   updatedAt   DateTime @updatedAt
 
   @@map("school_profiles")
@@ -118,7 +100,7 @@ model Attendance {
   id         String           @id @default(uuid())
   sessionId  String
   userId     String
-  status     AttendanceStatus @default(HADIR)
+  status     String           @default("HADIR")
   photoProof String?
   userLat    Float?
   userLng    Float?
@@ -151,7 +133,7 @@ model Question {
   id            String  @id @default(uuid())
   quizId        String
   questionText  String  @db.Text
-  options       Json // Array pilihan jawaban
+  options       String  @db.Text // JSON array, same representation as SQLite
   correctAnswer Int
   explanation   String? @db.Text
 
@@ -182,6 +164,7 @@ model Assignment {
   instruction String   @db.Text
   dueDate     DateTime
 
+  module      Module       @relation(fields: [moduleId], references: [id], onDelete: Cascade)
   submissions Submission[]
 
   @@map("assignments")
@@ -194,7 +177,7 @@ model Submission {
   mediaUrl     String
   notes        String?          @db.Text
   score        Float?
-  status       SubmissionStatus @default(PENDING)
+  status       String           @default("PENDING")
   createdAt    DateTime         @default(now())
 
   assignment Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)

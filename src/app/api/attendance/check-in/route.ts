@@ -3,14 +3,13 @@ import prisma from "@/lib/prisma";
 import { requireRole } from "@/lib/auth";
 import { distanceMeters } from "@/lib/school";
 import { z } from "zod";
-import { mkdir, writeFile } from "fs/promises";
-import path from "path";
+import { assertMediaObjectExists } from "@/lib/supabase-storage";
 
 const CheckInSchema = z.object({
   sessionId: z.string().min(1),
   userLat: z.number(),
   userLng: z.number(),
-  photoProof: z.string().startsWith("data:image/"), // data:image/jpeg;base64,...
+  storagePath: z.string().min(1),
 });
 
 export async function POST(req: NextRequest) {
@@ -65,18 +64,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Anda sudah check-in pada sesi ini." }, { status: 409 });
   }
 
-  // FR-402: save selfie proof
-  let photoUrl: string | null = null;
-  if (body.photoProof) {
-    const base64 = body.photoProof.split(";base64,")[1];
-    if (base64) {
-      const ext = body.photoProof.startsWith("data:image/png") ? "png" : "jpg";
-      const fileName = `selfie-${siswa.id}-${Date.now()}.${ext}`;
-      const dir = path.join(process.cwd(), "public", "uploads", "attendance");
-      await mkdir(dir, { recursive: true });
-      await writeFile(path.join(dir, fileName), Buffer.from(base64, "base64"));
-      photoUrl = `/uploads/attendance/${fileName}`;
-    }
+  try {
+    await assertMediaObjectExists(body.storagePath, `attendance/${siswa.id}/`);
+  } catch (error) {
+    console.error("Validasi foto presensi gagal:", error);
+    return NextResponse.json(
+      { error: "Foto selfie tidak ditemukan atau belum selesai diunggah." },
+      { status: 400 },
+    );
   }
 
   const attendance = await prisma.attendance.create({
@@ -84,7 +79,7 @@ export async function POST(req: NextRequest) {
       sessionId: body.sessionId,
       userId: siswa.id,
       status: "HADIR",
-      photoProof: photoUrl,
+      photoProof: `storage://school-media/${body.storagePath}`,
       userLat: body.userLat,
       userLng: body.userLng,
     },

@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { Badge } from "@/components/ui";
 import PenilaianClient from "./PenilaianClient";
+import { signMediaReferences } from "@/lib/supabase-storage";
 
 export const dynamic = "force-dynamic";
 
@@ -12,6 +13,9 @@ export default async function GuruPenilaian() {
       assignment: { select: { title: true } },
     },
   });
+  const mediaUrls = await signMediaReferences(
+    submissions.map((submission) => submission.mediaUrl),
+  );
 
   return (
     <div className="space-y-4">
@@ -23,12 +27,12 @@ export default async function GuruPenilaian() {
         </p>
       </div>
       <PenilaianClient
-        initial={submissions.map((s) => ({
+        initial={submissions.map((s, index) => ({
           id: s.id,
           status: s.status,
           score: s.score,
           notes: s.notes,
-          mediaUrl: s.mediaUrl,
+          mediaUrl: mediaUrls[index] ?? null,
           createdAt: s.createdAt.toISOString(),
           assignmentTitle: s.assignment.title,
           userName: s.user.name,

@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { CloudUpload, Info } from "lucide-react";
 import { Badge, statusBadgeTone } from "@/components/ui";
+import { uploadPrivateMedia } from "@/lib/upload-media";
 
 type AssignmentDTO = {
   id: string;
@@ -45,15 +46,6 @@ function compressImage(file: File): Promise<{ mime: string; dataUrl: string }> {
   });
 }
 
-function fileToDataUrl(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const r = new FileReader();
-    r.onload = () => resolve(r.result as string);
-    r.onerror = reject;
-    r.readAsDataURL(file);
-  });
-}
-
 export default function TugasClient({ assignments }: { assignments: AssignmentDTO[] }) {
   const fileRefs = useRef<Record<string, HTMLInputElement | null>>({});
   const [progressTask, setProgressTask] = useState<string | null>(null);
@@ -73,25 +65,31 @@ export default function TugasClient({ assignments }: { assignments: AssignmentDT
     setProgressTask(assignment.id);
 
     try {
-      let payload: string;
+      let uploadFile = file;
       if (file.type.startsWith("image/")) {
         const compressed = await compressImage(file); // auto-kompresi!
-        payload = compressed.dataUrl;
+        const imageBlob = await fetch(compressed.dataUrl).then((response) => response.blob());
+        uploadFile = new File([imageBlob], file.name.replace(/\.[^.]+$/, ".jpg"), {
+          type: compressed.mime,
+        });
       } else if (file.type.startsWith("video/")) {
         if (file.size > MAX_FALLBACK_MB * 1024 * 1024) {
           throw new Error(`Ukuran video melebihi ${MAX_FALLBACK_MB}MB. Rekam ulang dengan durasi/resolusi lebih ringkas.`);
         }
-        payload = await fileToDataUrl(file);
       } else {
         throw new Error("Format tidak didukung. Gunakan foto atau video (mp4/webm/mov).");
       }
 
+      const storagePath = await uploadPrivateMedia(uploadFile, {
+        purpose: "submission",
+        assignmentId: assignment.id,
+      });
       const res = await fetch("/api/submissions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           assignmentId: assignment.id,
-          mediaBase64: payload,
+          storagePath,
           notes: notesDraft[assignment.id] ?? null,
         }),
       });

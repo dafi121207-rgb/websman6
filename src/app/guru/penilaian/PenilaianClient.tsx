@@ -8,7 +8,7 @@ type Sub = {
   status: string;
   score: number | null;
   notes: string | null;
-  mediaUrl: string;
+  mediaUrl: string | null;
   createdAt: string;
   assignmentTitle: string;
   userName: string;
@@ -44,7 +44,8 @@ export default function PenilaianClient({ initial }: { initial: Sub[] }) {
   return (
     <div className="space-y-3">
       {subs.map((s) => {
-        const isVideo = /\.(mp4|webm|mov|ogg|avi)$/i.test(s.mediaUrl);
+        const mediaPath = s.mediaUrl?.split("?")[0] ?? "";
+        const isVideo = /\.(mp4|webm|mov|ogg|avi)$/i.test(mediaPath);
         return (
           <div key={s.id} className="glass-shell ring-1 ring-black/5">
             <div className="bezel-core p-4">
@@ -77,7 +78,11 @@ export default function PenilaianClient({ initial }: { initial: Sub[] }) {
               {expanded === s.id && (
                 <div className="mt-3">
                   <div className="rounded-2xl overflow-hidden ring-1 ring-black/10 bg-slate-950/5">
-                    {isVideo ? (
+                    {!s.mediaUrl ? (
+                      <p className="p-6 text-center text-sm text-slate-500">
+                        Media ini tidak tersedia di penyimpanan.
+                      </p>
+                    ) : isVideo ? (
                       <video src={s.mediaUrl} controls className="w-full max-h-96" />
                     ) : (
                       // eslint-disable-next-line @next/next/no-img-element
