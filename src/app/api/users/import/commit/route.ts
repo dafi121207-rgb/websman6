@@ -99,49 +99,61 @@ export async function POST(req: NextRequest) {
   const credentials: { identifier: string; name: string; kelas: string | null; password: string }[] = [];
 
   try {
-    await prisma.$transaction(async (tx) => {
-      const existing = await tx.user.findMany({
-        where: { identifier: { in: hashed.map((h) => h.data.identifier) } },
-        select: { identifier: true },
-      });
-      const inDb = new Set(existing.map((u) => u.identifier));
+    await prisma.$transaction(
+      async (tx) => {
+        const existing = await tx.user.findMany({
+          where: { identifier: { in: hashed.map((h) => h.data.identifier) } },
+          select: { identifier: true },
+        });
+        const inDb = new Set(existing.map((u) => u.identifier));
 
-      for (const { data, password, hash } of hashed) {
-        const already = inDb.has(data.identifier);
-        if (already) {
-          // Password TIDAK ditimpa saat update — siswa yang sudah punya
-          // password lama harus tetap bisa login.
-          await tx.user.update({
-            where: { identifier: data.identifier },
-            data: {
-              name: data.name,
-              role: data.role,
-              kelas: data.kelas,
-              ...(data.email ? { email: data.email } : {}),
-            },
-          });
-          updated += 1;
-        } else {
-          await tx.user.create({
-            data: {
+        const toCreate: {
+          identifier: string;
+          name: string;
+          password: string;
+          role: string;
+          kelas: string | null;
+          email: string | null;
+        }[] = [];
+
+        for (const { data, password, hash } of hashed) {
+          const already = inDb.has(data.identifier);
+          if (already) {
+            await tx.user.update({
+              where: { identifier: data.identifier },
+              data: {
+                name: data.name,
+                role: data.role,
+                kelas: data.kelas,
+                ...(data.email ? { email: data.email } : {}),
+              },
+            });
+            updated += 1;
+          } else {
+            toCreate.push({
               identifier: data.identifier,
               name: data.name,
               password: hash,
               role: data.role,
               kelas: data.kelas,
               email: data.email,
-            },
-          });
-          created += 1;
-          credentials.push({
-            identifier: data.identifier,
-            name: data.name,
-            kelas: data.kelas,
-            password,
-          });
+            });
+            credentials.push({
+              identifier: data.identifier,
+              name: data.name,
+              kelas: data.kelas,
+              password,
+            });
+          }
         }
-      }
-    });
+
+        if (toCreate.length > 0) {
+          const res = await tx.user.createMany({ data: toCreate });
+          created = res.count;
+        }
+      },
+      { maxWait: 10000, timeout: 60000 }
+    );
   } catch (e) {
     console.error("[import/commit] gagal:", e);
     return NextResponse.json(
