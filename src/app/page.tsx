@@ -99,9 +99,19 @@ export default async function LandingPage() {
                 <Dumbbell size={15} className="text-blue-600" />
                 <span>Kebugaran Jasmani</span>
               </div>
-              <div className="hidden lg:flex items-center gap-2 absolute top-24 -right-6 px-3.5 py-2 rounded-xl bg-white/75 border border-stone-200/80 shadow-xs text-xs font-bold text-slate-700 backdrop-blur-md rotate-6">
-                <Medal size={15} className="text-amber-600" />
-                <span>Pembinaan Atlet Pelajar</span>
+              <div className="hidden lg:block absolute top-24 -right-6 w-48 h-32 overflow-hidden rounded-2xl bg-slate-900 shadow-lg ring-1 ring-white/80 rotate-3">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="https://images.unsplash.com/photo-1531415074968-036ba1b575da?auto=format&fit=crop&w=640&q=80"
+                  alt=""
+                  aria-hidden="true"
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/15 to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 flex items-center gap-2 p-3 text-white">
+                  <Medal size={15} className="shrink-0 text-amber-300" />
+                  <span className="text-xs font-bold leading-tight">Pembinaan Atlet Pelajar</span>
+                </div>
               </div>
             </ParallaxLayer>
 

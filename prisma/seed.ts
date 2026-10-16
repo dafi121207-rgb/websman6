@@ -13,6 +13,10 @@ const MISSION = [
 ];
 
 async function main() {
+  if (process.env.NODE_ENV === "production") {
+    throw new Error("Seed demo tidak boleh dijalankan di production.");
+  }
+
   console.log("🌱 Seeding database SMAN 6 Garut...");
 
   await prisma.schoolProfile.upsert({

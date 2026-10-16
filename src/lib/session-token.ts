@@ -3,10 +3,13 @@ import type { SessionUser } from "@/lib/types";
 
 export const SESSION_COOKIE = "sman6garut_session";
 
-// Module aman untuk Edge (middleware) & Node runtime — tanpa next/headers.
-const SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET ?? "fallback-secret-change-me"
-);
+function getSecret() {
+  const secret = process.env.JWT_SECRET;
+  if (!secret || secret.length < 32) {
+    throw new Error("JWT_SECRET wajib disetel dan minimal 32 karakter.");
+  }
+  return new TextEncoder().encode(secret);
+}
 
 export async function signSession(user: SessionUser): Promise<string> {
   return new SignJWT({
@@ -19,13 +22,14 @@ export async function signSession(user: SessionUser): Promise<string> {
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime("7d")
-    .sign(SECRET);
+    .sign(getSecret());
 }
 
 export async function verifySession(token?: string): Promise<SessionUser | null> {
   if (!token) return null;
+  const secret = getSecret();
   try {
-    const { payload } = await jwtVerify(token, SECRET);
+    const { payload } = await jwtVerify(token, secret);
     if (!payload.id || !payload.role) return null;
     return {
       id: payload.id as string,

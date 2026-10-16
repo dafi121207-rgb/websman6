@@ -1,7 +1,8 @@
 node_modules/
 .next/
 out/
-.env*.local
+.env*
+!.env.example
 *.db
 *.db-journal
 prisma/dev.db
