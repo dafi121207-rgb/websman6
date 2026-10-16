@@ -12,28 +12,28 @@ const QUICK = [
     label: "Baca Materi",
     sub: "Silabus & Video Teori",
     icon: BookOpen,
-    image: "https://images.unsplash.com/photo-1517649763962-0c623266ddc0?auto=format&fit=crop&w=600&q=80",
+    image: "https://images.unsplash.com/photo-1526232761682-d26e03ac148e?auto=format&fit=crop&w=600&q=80",
   },
   {
     href: "/siswa/tugas",
     label: "Kumpulkan Tugas",
     sub: "Rekaman Praktik Fisik",
     icon: ClipboardList,
-    image: "https://images.unsplash.com/photo-1574680096145-d05b474e2155?auto=format&fit=crop&w=600&q=80",
+    image: "https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=600&q=80",
   },
   {
     href: "/siswa/absensi",
     label: "Absen di Lapangan",
     sub: "Presensi Geolocation",
     icon: Camera,
-    image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=600&q=80",
+    image: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=600&q=80",
   },
   {
     href: "/siswa/kuis",
     label: "Kerjakan Kuis",
     sub: "Uji Pemahaman Bab",
     icon: HelpCircle,
-    image: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=600&q=80",
+    image: "https://images.unsplash.com/photo-1532444458054-01a7dd3e9fca?auto=format&fit=crop&w=600&q=80",
   },
 ];
 
