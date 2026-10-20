@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="900" viewBox="0 0 600 900" fill="none">
+  <defs>
+    <linearGradient id="figure" x1="300" y1="172" x2="300" y2="710" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#eef2ff" stop-opacity=".32"/>
+      <stop offset="1" stop-color="#cbd5e1" stop-opacity=".02"/>
+    </linearGradient>
+    <radialGradient id="light" cx="0" cy="0" r="1" gradientTransform="translate(300 290) rotate(90) scale(300 260)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#e0e7ff" stop-opacity=".12"/>
+      <stop offset="1" stop-color="#e0e7ff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <path fill="url(#light)" d="M0 0h600v900H0z"/>
+  <circle cx="300" cy="294" r="194" stroke="#e2e8f0" stroke-opacity=".1"/>
+  <circle cx="300" cy="294" r="161" stroke="#e2e8f0" stroke-opacity=".06"/>
+  <circle cx="300" cy="264" r="81" fill="url(#figure)" stroke="#f8fafc" stroke-opacity=".2"/>
+  <path d="M118 588v-30c0-102 81-185 182-185s182 83 182 185v30c0 26-21 47-47 47H165c-26 0-47-21-47-47Z" fill="url(#figure)" stroke="#f8fafc" stroke-opacity=".16"/>
+  <path d="M70 70h28M70 70v28M530 70h-28M530 70v28" stroke="#f1f5f9" stroke-opacity=".28" stroke-width="2"/>
+</svg>

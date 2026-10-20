@@ -23,6 +23,8 @@ import { Badge, PrimaryButton, SecondaryButton } from "@/components/ui";
 import LandingAnimations from "@/components/LandingAnimations";
 import { ParallaxLayers, ParallaxLayer } from "@/components/ParallaxLayers";
 import prisma from "@/lib/prisma";
+import ReflectiveCreatorCard from "@/components/reflective-card/ReflectiveCreatorCard";
+import { CREATORS } from "@/data/creators";
 
 export const dynamic = "force-dynamic";
 
@@ -105,49 +107,6 @@ const LEARNING_GOALS = [
     tag: "Tertib & Akuntabel",
     desc: "Mendukung kedisiplinan berolahraga melalui sistem presensi berbasis radius lokasi lapangan dan pengumpulan rekaman tugas praktik siswa.",
     icon: CheckCircle2,
-  },
-];
-
-const CREATORS = [
-  {
-    name: "Ahmad Dafi",
-    nim: "26572013002",
-    prodi: "Sistem Informasi",
-    campus: "Institut Pendidikan Indonesia",
-    initials: "AD",
-    color: "from-blue-600 to-indigo-700",
-  },
-  {
-    name: "Misya Nafisya",
-    nim: "26572013005",
-    prodi: "Sistem Informasi",
-    campus: "Institut Pendidikan Indonesia",
-    initials: "MN",
-    color: "from-rose-500 to-purple-600",
-  },
-  {
-    name: "Qori Salsabil Mauliddina",
-    nim: "26572013003",
-    prodi: "Sistem Informasi",
-    campus: "Institut Pendidikan Indonesia",
-    initials: "QS",
-    color: "from-emerald-600 to-teal-700",
-  },
-  {
-    name: "Muhammad Rafli",
-    nim: "26572013004",
-    prodi: "Sistem Informasi",
-    campus: "Institut Pendidikan Indonesia",
-    initials: "MR",
-    color: "from-amber-500 to-orange-600",
-  },
-  {
-    name: "Bayu Raihan",
-    nim: "2657201073009",
-    prodi: "Sistem Informasi",
-    campus: "Institut Pendidikan Indonesia",
-    initials: "BR",
-    color: "from-sky-600 to-cyan-700",
   },
 ];
 
@@ -472,7 +431,7 @@ export default async function LandingPage() {
 
         {/* ============ PROFIL PEMBUAT (TIM PENGEMBANG SISTEM INFORMASI IPI) ============ */}
         <section className="px-4 py-14" id="tim-pembuat">
-          <div className="max-w-5xl mx-auto space-y-10">
+          <div className="max-w-6xl mx-auto space-y-10">
             <div className="text-center max-w-2xl mx-auto">
               <p className="text-[11px] font-bold tracking-[0.25em] text-blue-600 uppercase">
                 Profil Pembuat
@@ -486,53 +445,9 @@ export default async function LandingPage() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3.5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5">
               {CREATORS.map((creator) => (
-                <div
-                  key={creator.name}
-                  className="gsap-reveal misi-card glass-shell ring-1 ring-black/5 bg-white/70 flex flex-col"
-                >
-                  <div className="bezel-core p-5 h-full flex flex-col justify-between bg-white/95 text-center">
-                    {/* Photo Placeholder Frame */}
-                    <div className="space-y-3">
-                      <div className="w-20 h-20 sm:w-22 sm:h-22 mx-auto rounded-3xl relative overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200 ring-2 ring-slate-200/80 shadow-inner flex flex-col items-center justify-center group">
-                        <span
-                          className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${creator.color} text-white font-extrabold text-base flex items-center justify-center shadow-md`}
-                        >
-                          {creator.initials}
-                        </span>
-                        <span className="absolute bottom-1 px-1.5 py-0.5 rounded-md bg-white/90 text-[9px] font-semibold text-slate-500 tracking-tight">
-                          Foto Placeholder
-                        </span>
-                      </div>
-
-                      {/* Name & NIM */}
-                      <div>
-                        <h3 className="font-extrabold text-slate-900 text-sm sm:text-base leading-snug">
-                          {creator.name}
-                        </h3>
-                        <div className="mt-1.5">
-                          {creator.nim ? (
-                            <span className="inline-block px-2.5 py-0.5 rounded-lg bg-blue-50 text-blue-700 font-mono text-[11px] font-bold ring-1 ring-blue-100">
-                              NIM: {creator.nim}
-                            </span>
-                          ) : (
-                            <span className="inline-block px-2 py-0.5 rounded-lg bg-slate-100 text-slate-500 border border-dashed border-slate-300 text-[10px] font-semibold">
-                              NIM: Segera Diisi
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Prodi & Campus & Role */}
-                    <div className="pt-3 mt-3 border-t border-slate-100 space-y-1">
-                      <span className="inline-block px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 text-[10px] font-bold">
-                        {creator.prodi}
-                      </span>
-                      <p className="text-[11px] font-medium text-slate-500">{creator.campus}</p>                    </div>
-                  </div>
-                </div>
+                <ReflectiveCreatorCard key={creator.name} creator={creator} />
               ))}
             </div>
 
