@@ -179,6 +179,34 @@
   .nim { font-size: 12px; }
 }
 
+/* A CSS sheen keeps desktop hover useful if the shader cannot initialize. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .card:not([data-effect="webgl"]) .body {
+    transition: transform 250ms ease;
+  }
+
+  .card:not([data-effect="webgl"]):hover .body {
+    transform: rotateX(2deg) rotateY(-4deg);
+  }
+
+  .card:not([data-effect="webgl"]) .body::after {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    inset: -20%;
+    pointer-events: none;
+    background: linear-gradient(115deg, transparent 25%, rgb(255 255 255 / 26%) 48%, transparent 72%);
+    opacity: 0;
+    transform: translateX(-100%);
+    transition: transform 650ms ease, opacity 250ms ease;
+  }
+
+  .card:not([data-effect="webgl"]):hover .body::after {
+    opacity: 1;
+    transform: translateX(20%);
+  }
+}
+
 @media (prefers-reduced-motion: reduce), (hover: none), (pointer: coarse) {
   .body { transform: none; }
   .card[data-effect="webgl"] .reflection { display: none; }
