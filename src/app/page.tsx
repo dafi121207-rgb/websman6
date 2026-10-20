@@ -116,7 +116,6 @@ const CREATORS = [
     campus: "Institut Pendidikan Indonesia",
     initials: "AD",
     color: "from-blue-600 to-indigo-700",
-    role: "Lead Developer & System Architect",
   },
   {
     name: "Misya Nafisya",
@@ -125,7 +124,6 @@ const CREATORS = [
     campus: "Institut Pendidikan Indonesia",
     initials: "MN",
     color: "from-rose-500 to-purple-600",
-    role: "UI/UX Research & Content Strategy",
   },
   {
     name: "Qori Salsabil Mauliddina",
@@ -134,7 +132,6 @@ const CREATORS = [
     campus: "Institut Pendidikan Indonesia",
     initials: "QS",
     color: "from-emerald-600 to-teal-700",
-    role: "Frontend Interface & Interaction",
   },
   {
     name: "Muhammad Rafli",
@@ -143,7 +140,6 @@ const CREATORS = [
     campus: "Institut Pendidikan Indonesia",
     initials: "MR",
     color: "from-amber-500 to-orange-600",
-    role: "System Analyst & Quality Assurance",
   },
   {
     name: "Bayu Raihan",
@@ -152,7 +148,6 @@ const CREATORS = [
     campus: "Institut Pendidikan Indonesia",
     initials: "BR",
     color: "from-sky-600 to-cyan-700",
-    role: "Database & Deployment Specialist",
   },
 ];
 
@@ -272,7 +267,7 @@ export default async function LandingPage() {
                   <span className="px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 text-[11px] font-bold ring-1 ring-blue-400/30">
                     Informasi Satuan Pendidikan
                   </span>
-                  <span className="text-xs text-slate-400">NPSN: 20209214 · Akreditasi A Unggul</span>
+                  <span className="text-xs text-slate-400">NPSN: 20227475 · Akreditasi A Unggul</span>
                 </div>
                 <h3 className="text-lg sm:text-2xl font-extrabold text-white tracking-tight">
                   Profil Lengkap, Identitas &amp; Tata Tertib Siswa
@@ -535,11 +530,7 @@ export default async function LandingPage() {
                       <span className="inline-block px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 text-[10px] font-bold">
                         {creator.prodi}
                       </span>
-                      <p className="text-[11px] font-medium text-slate-500">{creator.campus}</p>
-                      <p className="text-[10px] font-semibold text-blue-600 pt-1 leading-tight">
-                        {creator.role}
-                      </p>
-                    </div>
+                      <p className="text-[11px] font-medium text-slate-500">{creator.campus}</p>                    </div>
                   </div>
                 </div>
               ))}
@@ -602,7 +593,7 @@ export default async function LandingPage() {
                         <MapPin size={16} />
                       </span>
                       <div>
-                        <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Alamat Kampus</p>
+                        <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Alamat Sekolah</p>
                         <p className="text-sm font-semibold text-slate-800">
                           Jl. Guntur Melati No. 12, Tarogong Kidul, Garut, Jawa Barat
                         </p>
