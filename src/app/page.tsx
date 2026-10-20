@@ -21,7 +21,7 @@ import {
 import PublicShell from "@/components/PublicShell";
 import { Badge, PrimaryButton, SecondaryButton } from "@/components/ui";
 import LandingAnimations from "@/components/LandingAnimations";
-import { ParallaxLayers, ParallaxLayer } from "@/components/ParallaxLayers";
+import SchoolVideoHero from "@/components/SchoolVideoHero";
 import prisma from "@/lib/prisma";
 import ReflectiveCreatorCard from "@/components/reflective-card/ReflectiveCreatorCard";
 import { CREATORS } from "@/data/creators";
@@ -117,82 +117,31 @@ export default async function LandingPage() {
   return (
     <PublicShell>
       <LandingAnimations />
-      <main className="pt-28 pb-16">
-        {/* ============ HERO DENGAN PARALLAX LAYERS ============ */}
-        <section className="px-4 pb-16 relative">
-          <ParallaxLayers pointer={true} direction="vertical" className="max-w-5xl mx-auto">
-            {/* Background Layer: Ambient Orbs & Subtle Depth Rings (depth 0.8) */}
-            <ParallaxLayer depth={0.8} aria-hidden="true" className="pointer-events-none absolute inset-0 -z-20">
-              <div className="absolute top-0 left-1/4 w-80 h-80 rounded-full bg-blue-300/25 blur-3xl" />
-              <div className="absolute top-12 right-1/4 w-72 h-72 rounded-full bg-amber-200/30 blur-3xl" />
-              <div className="absolute -top-6 right-8 w-36 h-36 rounded-2xl border border-blue-400/20 rotate-12 hidden md:block" />
-            </ParallaxLayer>
-
-            {/* Midground Layer: Decorative Sports Feature Badges (depth 0.4) */}
-            <ParallaxLayer depth={0.4} aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
-              <div className="hidden lg:flex items-center gap-2 absolute top-10 -left-6 px-3.5 py-2 rounded-xl bg-white/75 border border-stone-200/80 shadow-xs text-xs font-bold text-slate-700 backdrop-blur-md -rotate-6">
-                <Dumbbell size={15} className="text-blue-600" />
-                <span>Kebugaran Jasmani</span>
-              </div>
-              <div className="hidden lg:block absolute top-24 -right-6 w-48 h-32 overflow-hidden rounded-2xl bg-slate-900 shadow-lg ring-1 ring-white/80 rotate-3">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="https://images.unsplash.com/photo-1531415074968-036ba1b575da?auto=format&fit=crop&w=640&q=80"
-                  alt=""
-                  aria-hidden="true"
-                  className="absolute inset-0 h-full w-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/15 to-transparent" />
-                <div className="absolute inset-x-0 bottom-0 flex items-center gap-2 p-3 text-white">
-                  <Medal size={15} className="shrink-0 text-amber-300" />
-                  <span className="text-xs font-bold leading-tight">Pembinaan Atlet Pelajar</span>
-                </div>
-              </div>
-            </ParallaxLayer>
-
-            {/* Content Layer: Main Title, Description & Action Buttons (depth 0) */}
-            <ParallaxLayer depth={0} className="relative z-10">
-              <div className="text-center mb-12">
-                <h1 className="hero-anim-title text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.05] text-slate-900">
-                  SMAN 6 <span className="text-blue-600">GARUT</span>
-                </h1>
-                <p className="hero-anim-title mt-4 text-base sm:text-xl text-slate-600 max-w-2xl mx-auto font-normal leading-relaxed">
-                  {profile.tagline}
+      <main className="pt-18 pb-16">
+        <SchoolVideoHero tagline={profile.tagline} />
+        <section className="px-4 pt-14 pb-8">
+          {/* Visi card */}
+          <div className="max-w-3xl mx-auto visi-card-anim" id="visi">
+            <div className="glass-shell ring-1 ring-black/5 shadow-2xl bg-white/80 backdrop-blur-xl">
+              <div className="bezel-core p-8 sm:p-10 text-center relative overflow-hidden bg-white/95">
+                <div className="absolute -top-16 -right-16 w-56 h-56 rounded-full bg-blue-100/60 blur-3xl pointer-events-none" />
+                <p className="text-[11px] font-bold tracking-[0.25em] text-blue-600 uppercase">
+                  Visi Sekolah
                 </p>
-                <div className="hero-anim-cta mt-8 flex flex-col sm:flex-row justify-center items-stretch sm:items-center gap-3.5">
-                  <PrimaryButton icon={ArrowRight} href="/login" className="w-full sm:w-auto min-h-11">
-                    Masuk sebagai Siswa / Guru
-                  </PrimaryButton>
-                  <SecondaryButton href="#materi" className="w-full sm:w-auto min-h-11">
-                    Jelajahi Modul Pembelajaran
-                  </SecondaryButton>
+                <h2 className="mt-3 text-xl sm:text-3xl font-extrabold leading-snug text-slate-900">
+                  {profile.vision}
+                </h2>
+                <div className="mt-6 flex flex-wrap justify-center gap-2.5 text-xs">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-slate-700 font-semibold">
+                    <ShieldCheck size={14} className="text-emerald-600" /> Terakreditasi &amp; Berstandar
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-slate-700 font-semibold">
+                    <Award size={14} className="text-amber-600" /> Sekolah Pembina Atlet Unggul
+                  </span>
                 </div>
               </div>
-
-              {/* Visi card */}
-              <div className="max-w-3xl mx-auto visi-card-anim" id="visi">
-                <div className="glass-shell ring-1 ring-black/5 shadow-2xl bg-white/80 backdrop-blur-xl">
-                  <div className="bezel-core p-8 sm:p-10 text-center relative overflow-hidden bg-white/95">
-                    <div className="absolute -top-16 -right-16 w-56 h-56 rounded-full bg-blue-100/60 blur-3xl pointer-events-none" />
-                    <p className="text-[11px] font-bold tracking-[0.25em] text-blue-600 uppercase">
-                      Visi Sekolah
-                    </p>
-                    <h2 className="mt-3 text-xl sm:text-3xl font-extrabold leading-snug text-slate-900">
-                      {profile.vision}
-                    </h2>
-                    <div className="mt-6 flex flex-wrap justify-center gap-2.5 text-xs">
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-slate-700 font-semibold">
-                        <ShieldCheck size={14} className="text-emerald-600" /> Terakreditasi &amp; Berstandar
-                      </span>
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-slate-700 font-semibold">
-                        <Award size={14} className="text-amber-600" /> Sekolah Pembina Atlet Unggul
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </ParallaxLayer>
-          </ParallaxLayers>
+            </div>
+          </div>
         </section>
 
         {/* ============ MISI BENTO ============ */}
