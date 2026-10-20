@@ -40,7 +40,7 @@ async function getSchoolData() {
 
 const SCHOOL_IDENTITY = [
   { label: "Nama Resmi", value: "SMA Negeri 6 Garut", icon: Building2 },
-  { label: "NPSN", value: "20209214", icon: ShieldCheck },
+  { label: "NPSN", value: "20227475", icon: ShieldCheck },
   { label: "Status Sekolah", value: "Negeri", icon: Award },
   { label: "Bentuk Pendidikan", value: "Sekolah Menengah Atas (SMA)", icon: GraduationCap },
   { label: "Status Akreditasi", value: "Akreditasi A (Amat Baik)", icon: Medal },
@@ -112,7 +112,7 @@ export default async function ProfilSekolahPage() {
                     <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
                       <Badge tone="blue">Profil Resmi Satuan Pendidikan</Badge>
                       <Badge tone="emerald">Akreditasi A Unggul</Badge>
-                      <span className="text-xs font-bold text-slate-500">NPSN: 20209214</span>
+                      <span className="text-xs font-bold text-slate-500">NPSN: 20227475</span>
                     </div>
 
                     <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
@@ -333,7 +333,7 @@ export default async function ProfilSekolahPage() {
                         <MapPin size={16} />
                       </span>
                       <div>
-                        <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Alamat Kampus</p>
+                        <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Alamat Sekolah</p>
                         <p className="text-xs sm:text-sm font-semibold text-slate-800">
                           Jl. Guntur Melati No. 12, Kel. Haurpanggung, Kec. Tarogong Kidul, Garut, Jawa Barat 44151
                         </p>
