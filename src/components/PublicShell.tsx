@@ -5,10 +5,12 @@ import { LogIn, Menu, X } from "lucide-react";
 import { useState } from "react";
 
 const LINKS = [
-  { href: "#visi", label: "Visi & Misi" },
-  { href: "#materi", label: "Modul PJOK" },
-  { href: "#berita", label: "Berita" },
-  { href: "#kontak", label: "Kontak & Lokasi" },
+  { href: "/profil-sekolah", label: "Profil Sekolah" },
+  { href: "/#tujuan", label: "Tujuan Web" },
+  { href: "/#visi", label: "Visi & Misi" },
+  { href: "/#materi", label: "Modul PJOK" },
+  { href: "/#tim-pembuat", label: "Tim Pengembang" },
+  { href: "/#kontak", label: "Kontak & Lokasi" },
 ];
 
 export default function PublicShell({ children }: { children: React.ReactNode }) {
@@ -45,15 +47,15 @@ export default function PublicShell({ children }: { children: React.ReactNode })
           </Link>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-1.5 p-1 rounded-2xl bg-white/50 border border-stone-200/60 shadow-xs">
+          <nav className="hidden lg:flex items-center gap-1 p-1 rounded-2xl bg-white/60 border border-stone-200/60 shadow-xs">
             {LINKS.map((l) => (
-              <a
+              <Link
                 key={l.href}
                 href={l.href}
-                className="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-white rounded-xl transition-all"
+                className="px-3.5 py-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-white rounded-xl transition-all"
               >
                 {l.label}
-              </a>
+              </Link>
             ))}
           </nav>
 
@@ -70,7 +72,7 @@ export default function PublicShell({ children }: { children: React.ReactNode })
             {/* Mobile Hamburger Toggle */}
             <button
               onClick={() => setOpen(!open)}
-              className="md:hidden p-2.5 rounded-xl hover:bg-white/80 text-slate-700 border border-stone-200/60 cursor-pointer"
+              className="lg:hidden p-2.5 rounded-xl hover:bg-white/80 text-slate-700 border border-stone-200/60 cursor-pointer"
               aria-label="Toggle Menu"
             >
               {open ? <X size={20} /> : <Menu size={20} />}
@@ -81,17 +83,17 @@ export default function PublicShell({ children }: { children: React.ReactNode })
 
       {/* Mobile Drawer Menu */}
       {open && (
-        <div className="fixed inset-x-0 top-18 z-40 md:hidden p-4 bg-[#F5F3EF]/95 backdrop-blur-xl border-b border-stone-200 shadow-xl">
+        <div className="fixed inset-x-0 top-18 z-40 lg:hidden p-4 bg-[#F5F3EF]/95 backdrop-blur-xl border-b border-stone-200 shadow-xl">
           <div className="space-y-1.5 max-w-sm mx-auto">
             {LINKS.map((l) => (
-              <a
+              <Link
                 key={l.href}
                 href={l.href}
                 onClick={() => setOpen(false)}
                 className="block px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-white rounded-xl transition-colors"
               >
                 {l.label}
-              </a>
+              </Link>
             ))}
             <div className="pt-2">
               <Link

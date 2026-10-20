@@ -3,6 +3,8 @@ import {
   ArrowRight,
   Award,
   BookOpen,
+  BookOpenCheck,
+  CheckCircle2,
   Dumbbell,
   HeartPulse,
   Mail,
@@ -11,6 +13,10 @@ import {
   Phone,
   ShieldCheck,
   Sparkles,
+  Target,
+  User,
+  Users,
+  Video,
 } from "lucide-react";
 import PublicShell from "@/components/PublicShell";
 import { Badge, PrimaryButton, SecondaryButton } from "@/components/ui";
@@ -72,6 +78,81 @@ const ATHLETE_PROGRAMS = [
     label: "Latihan Kebugaran",
     desc: "Contoh konten latihan kekuatan dan kelenturan tubuh.",
     image: "https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=900&q=80",
+  },
+];
+
+const LEARNING_GOALS = [
+  {
+    title: "Aksesibilitas Teori & Silabus Fleksibel",
+    tag: "Akses 24/7",
+    desc: "Memungkinkan seluruh peserta didik mempelajari materi konsep kebugaran jasmani, kesehatan, dan aturan cabang olahraga kapan saja dan di mana saja.",
+    icon: BookOpenCheck,
+  },
+  {
+    title: "Visualisasi Gerak & Video Praktik",
+    tag: "Multi-Modal",
+    desc: "Mempermudah pemahaman teknik olahraga melalui video demonstrasi terstruktur, meminimalisir kesalahan postur dan risiko cedera saat berolahraga.",
+    icon: Video,
+  },
+  {
+    title: "Evaluasi Pemahaman & Kuis Mandiri",
+    tag: "Objektif & Transparan",
+    desc: "Menyediakan kuis interaktif formatif per modul untuk mengukur daya serap materi teori siswa secara real-time dan terdata otomatis.",
+    icon: Target,
+  },
+  {
+    title: "Digitalisasi Presensi & Portofolio Tugas",
+    tag: "Tertib & Akuntabel",
+    desc: "Mendukung kedisiplinan berolahraga melalui sistem presensi berbasis radius lokasi lapangan dan pengumpulan rekaman tugas praktik siswa.",
+    icon: CheckCircle2,
+  },
+];
+
+const CREATORS = [
+  {
+    name: "Ahmad Dafi",
+    nim: "26572013002",
+    prodi: "Sistem Informasi",
+    campus: "Institut Pendidikan Indonesia",
+    initials: "AD",
+    color: "from-blue-600 to-indigo-700",
+    role: "Lead Developer & System Architect",
+  },
+  {
+    name: "Misya Nafisya",
+    nim: "26572013005",
+    prodi: "Sistem Informasi",
+    campus: "Institut Pendidikan Indonesia",
+    initials: "MN",
+    color: "from-rose-500 to-purple-600",
+    role: "UI/UX Research & Content Strategy",
+  },
+  {
+    name: "Qori Salsabil Mauliddina",
+    nim: "26572013003",
+    prodi: "Sistem Informasi",
+    campus: "Institut Pendidikan Indonesia",
+    initials: "QS",
+    color: "from-emerald-600 to-teal-700",
+    role: "Frontend Interface & Interaction",
+  },
+  {
+    name: "Muhammad Rafli",
+    nim: null,
+    prodi: "Sistem Informasi",
+    campus: "Institut Pendidikan Indonesia",
+    initials: "MR",
+    color: "from-amber-500 to-orange-600",
+    role: "System Analyst & Quality Assurance",
+  },
+  {
+    name: "Bayu Raihan",
+    nim: null,
+    prodi: "Sistem Informasi",
+    campus: "Institut Pendidikan Indonesia",
+    initials: "BR",
+    color: "from-sky-600 to-cyan-700",
+    role: "Database & Deployment Specialist",
   },
 ];
 
@@ -183,6 +264,79 @@ export default async function LandingPage() {
                   </div>
                 </div>
               ))}
+            </div>
+            {/* Teaser Banner ke Profil Sekolah Lengkap */}
+            <div className="mt-8 p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-blue-950 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl ring-1 ring-white/10">
+              <div className="space-y-1.5 text-center md:text-left">
+                <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
+                  <span className="px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 text-[11px] font-bold ring-1 ring-blue-400/30">
+                    Informasi Satuan Pendidikan
+                  </span>
+                  <span className="text-xs text-slate-400">NPSN: 20209214 · Akreditasi A Unggul</span>
+                </div>
+                <h3 className="text-lg sm:text-2xl font-extrabold text-white tracking-tight">
+                  Profil Lengkap, Identitas &amp; Tata Tertib Siswa
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-300 max-w-xl leading-relaxed">
+                  Ketahui data pokok sekolah, sejarah, budaya 5S, hak &amp; kewajiban peserta didik, serta regulasi kode disiplin SMAN 6 Garut secara utuh.
+                </p>
+              </div>
+              <Link
+                href="/profil-sekolah"
+                className="shrink-0 inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-slate-900 text-xs sm:text-sm font-bold hover:bg-blue-50 active:scale-[0.98] transition-all shadow-md group cursor-pointer"
+              >
+                <span>Lihat Profil Lengkap</span>
+                <ArrowRight size={16} className="text-blue-600 transition-transform group-hover:translate-x-1" />
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* ============ TUJUAN WEB PEMBELAJARAN ============ */}
+        <section className="px-4 py-14" id="tujuan">
+          <div className="max-w-5xl mx-auto space-y-10">
+            <div className="text-center max-w-2xl mx-auto">
+              <p className="text-[11px] font-bold tracking-[0.25em] text-blue-600 uppercase">
+                Tujuan Web Pembelajaran
+              </p>
+              <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight mt-2 text-slate-900">
+                Pilar Transformasi Digital PJOK
+              </h2>
+              <p className="text-slate-500 text-sm mt-2 leading-relaxed">
+                Platform ini dikembangkan untuk memudahkan proses belajar mengajar mata pelajaran PJOK di SMAN 6 Garut,
+                menghubungkan pemahaman teori kebugaran jasmani dengan efektivitas praktik di lapangan.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {LEARNING_GOALS.map((goal, idx) => {
+                const Icon = goal.icon;
+                return (
+                  <div
+                    key={idx}
+                    className="gsap-reveal misi-card glass-shell ring-1 ring-black/5 bg-white/70"
+                  >
+                    <div className="bezel-core p-6 h-full flex flex-col justify-between bg-white/95 space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center ring-1 ring-blue-100 shadow-xs">
+                          <Icon size={22} />
+                        </span>
+                        <span className="px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-[11px] font-bold">
+                          {goal.tag}
+                        </span>
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-slate-900 text-base sm:text-lg leading-snug">
+                          {goal.title}
+                        </h3>
+                        <p className="mt-2 text-[13px] text-slate-600 leading-relaxed font-normal">
+                          {goal.desc}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </section>
@@ -321,6 +475,85 @@ export default async function LandingPage() {
           </div>
         </section>
 
+        {/* ============ PROFIL PEMBUAT (TIM PENGEMBANG SISTEM INFORMASI IPI) ============ */}
+        <section className="px-4 py-14" id="tim-pembuat">
+          <div className="max-w-5xl mx-auto space-y-10">
+            <div className="text-center max-w-2xl mx-auto">
+              <p className="text-[11px] font-bold tracking-[0.25em] text-blue-600 uppercase">
+                Profil Pembuat
+              </p>
+              <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight mt-2 text-slate-900">
+                Tim Pengembang Media Pembelajaran
+              </h2>
+              <p className="text-slate-500 text-sm mt-2 leading-relaxed">
+                Portal Pembelajaran PJOK SMAN 6 Garut ini dirancang dan dikembangkan dengan dedikasi oleh mahasiswa
+                Program Studi Sistem Informasi — Institut Pendidikan Indonesia (IPI) Garut.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3.5">
+              {CREATORS.map((creator) => (
+                <div
+                  key={creator.name}
+                  className="gsap-reveal misi-card glass-shell ring-1 ring-black/5 bg-white/70 flex flex-col"
+                >
+                  <div className="bezel-core p-5 h-full flex flex-col justify-between bg-white/95 text-center">
+                    {/* Photo Placeholder Frame */}
+                    <div className="space-y-3">
+                      <div className="w-20 h-20 sm:w-22 sm:h-22 mx-auto rounded-3xl relative overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200 ring-2 ring-slate-200/80 shadow-inner flex flex-col items-center justify-center group">
+                        <span
+                          className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${creator.color} text-white font-extrabold text-base flex items-center justify-center shadow-md`}
+                        >
+                          {creator.initials}
+                        </span>
+                        <span className="absolute bottom-1 px-1.5 py-0.5 rounded-md bg-white/90 text-[9px] font-semibold text-slate-500 tracking-tight">
+                          Foto Placeholder
+                        </span>
+                      </div>
+
+                      {/* Name & NIM */}
+                      <div>
+                        <h3 className="font-extrabold text-slate-900 text-sm sm:text-base leading-snug">
+                          {creator.name}
+                        </h3>
+                        <div className="mt-1.5">
+                          {creator.nim ? (
+                            <span className="inline-block px-2.5 py-0.5 rounded-lg bg-blue-50 text-blue-700 font-mono text-[11px] font-bold ring-1 ring-blue-100">
+                              NIM: {creator.nim}
+                            </span>
+                          ) : (
+                            <span className="inline-block px-2 py-0.5 rounded-lg bg-slate-100 text-slate-500 border border-dashed border-slate-300 text-[10px] font-semibold">
+                              NIM: Segera Diisi
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Prodi & Campus & Role */}
+                    <div className="pt-3 mt-3 border-t border-slate-100 space-y-1">
+                      <span className="inline-block px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 text-[10px] font-bold">
+                        {creator.prodi}
+                      </span>
+                      <p className="text-[11px] font-medium text-slate-500">{creator.campus}</p>
+                      <p className="text-[10px] font-semibold text-blue-600 pt-1 leading-tight">
+                        {creator.role}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Tim Banner Note */}
+            <div className="p-4 rounded-2xl bg-blue-50/70 border border-blue-100 text-center max-w-xl mx-auto">
+              <p className="text-xs text-blue-900 font-medium">
+                Karya Inovasi Teknologi Pendidikan — Program Studi Sistem Informasi, Institut Pendidikan Indonesia (IPI) Garut bekerjasama dengan SMAN 6 Garut.
+              </p>
+            </div>
+          </div>
+        </section>
+
         {/* ============ KONTAK + GOOGLE MAPS / FOOTER ============ */}
         <footer className="px-4 pt-10 pb-16" id="kontak">
           <div className="max-w-5xl mx-auto space-y-6">
@@ -409,9 +642,14 @@ export default async function LandingPage() {
             </div>
 
             {/* Bottom Credits */}
-            <p className="text-center text-xs text-slate-400 pt-4">
-              © {new Date().getFullYear()} SMAN 6 Garut · Portal Pembelajaran Digital PJOK · MANDIRI, KOMPETITIF, DAN BERWAWASAN LINGKUNGAN
-            </p>
+            <div className="text-center space-y-1.5 pt-4 text-xs text-slate-400">
+              <p>
+                © {new Date().getFullYear()} SMAN 6 Garut · Portal Pembelajaran Digital PJOK · MANDIRI, KOMPETITIF, DAN BERWAWASAN LINGKUNGAN
+              </p>
+              <p className="text-[11px] text-slate-500">
+                Dikembangkan oleh Mahasiswa Program Studi Sistem Informasi · Institut Pendidikan Indonesia (IPI) Garut
+              </p>
+            </div>
           </div>
         </footer>
       </main>
