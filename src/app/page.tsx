@@ -135,7 +135,7 @@ const CREATORS = [
   },
   {
     name: "Muhammad Rafli",
-    nim: null,
+    nim: "26572013004",
     prodi: "Sistem Informasi",
     campus: "Institut Pendidikan Indonesia",
     initials: "MR",
@@ -143,7 +143,7 @@ const CREATORS = [
   },
   {
     name: "Bayu Raihan",
-    nim: null,
+    nim: "2657201073009",
     prodi: "Sistem Informasi",
     campus: "Institut Pendidikan Indonesia",
     initials: "BR",
