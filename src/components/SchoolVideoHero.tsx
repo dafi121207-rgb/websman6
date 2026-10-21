@@ -76,7 +76,7 @@ export default function SchoolVideoHero({ tagline }: { tagline: string }) {
     <section aria-labelledby="hero-title" className="relative isolate flex min-h-[560px] items-center overflow-hidden bg-slate-950 sm:min-h-[620px] lg:min-h-[680px]">
       {/* Always present, including before hydration or if video loading fails. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={POSTER} alt="" aria-hidden="true" fetchPriority="high" className="absolute inset-0 -z-30 h-full w-full object-cover" />
+      <img src={POSTER} alt="" aria-hidden="true" fetchPriority="high" className="absolute inset-0 z-0 h-full w-full object-cover" />
       <video
         ref={videoRef}
         src={enabled ? VIDEO : undefined}
@@ -91,10 +91,10 @@ export default function SchoolVideoHero({ tagline }: { tagline: string }) {
         onPlaying={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
         onError={() => { setFailed(true); setPlaying(false); }}
-        className={`pointer-events-none absolute inset-0 -z-20 h-full w-full object-cover ${failed ? "hidden" : ""}`}
+        className={`pointer-events-none absolute inset-0 z-0 h-full w-full object-cover ${failed ? "hidden" : ""}`}
       />
-      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-b from-slate-950/55 via-slate-950/55 to-slate-950/80" />
-      <div className="mx-auto w-full max-w-5xl px-5 py-24 text-center sm:px-8">
+      <div aria-hidden="true" className="absolute inset-0 z-10 bg-gradient-to-b from-slate-950/55 via-slate-950/55 to-slate-950/80" />
+      <div className="relative z-20 mx-auto w-full max-w-5xl px-5 py-24 text-center sm:px-8">
         <p className="mb-5 text-[11px] font-bold uppercase tracking-[0.25em] text-blue-100 sm:text-xs">Portal Pembelajaran PJOK</p>
         <h1 id="hero-title" className="hero-anim-title text-5xl font-extrabold leading-[1.05] tracking-tight text-white sm:text-7xl lg:text-8xl">
           SMAN 6 <span className="text-blue-200">GARUT</span>
@@ -110,7 +110,7 @@ export default function SchoolVideoHero({ tagline }: { tagline: string }) {
         </div>
       </div>
       {!failed && (
-        <button type="button" onClick={togglePlayback} aria-label={playing ? "Jeda video latar" : "Putar video latar"} className="absolute bottom-5 right-5 inline-flex min-h-11 items-center gap-2 rounded-full border border-white/40 bg-slate-950/60 px-4 py-2 text-xs font-semibold text-white backdrop-blur-sm hover:bg-slate-950/85 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:right-8">
+        <button type="button" onClick={togglePlayback} aria-label={playing ? "Jeda video latar" : "Putar video latar"} className="absolute bottom-5 right-5 z-20 inline-flex min-h-11 items-center gap-2 rounded-full border border-white/40 bg-slate-950/60 px-4 py-2 text-xs font-semibold text-white backdrop-blur-sm hover:bg-slate-950/85 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:right-8">
           {playing ? <Pause size={14} aria-hidden="true" /> : <Play size={14} aria-hidden="true" />}
           {playing ? "Jeda video" : "Putar video"}
         </button>
