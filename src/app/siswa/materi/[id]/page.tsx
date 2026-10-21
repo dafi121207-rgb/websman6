@@ -69,7 +69,7 @@ export default async function DetailMateri({ params }: { params: Promise<{ id: s
       )}
 
       {mod.pdfUrl && (
-        <a href={mod.pdfUrl} target="_blank" className="inline-flex items-center gap-2 text-blue-600 font-semibold text-sm">
+        <a href={`/modul/${mod.id}/ebook`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-blue-600 font-semibold text-sm">
           <FileText size={16} /> Unduh PDF Materi
         </a>
       )}

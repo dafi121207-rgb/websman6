@@ -6,7 +6,7 @@ const SIGNED_URL_TTL_SECONDS = 60 * 60;
 
 let adminClient: SupabaseClient | undefined;
 
-function getStorageAdmin(): SupabaseClient {
+export function getStorageAdmin(): SupabaseClient {
   const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !key) {

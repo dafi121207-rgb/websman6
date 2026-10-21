@@ -13,12 +13,12 @@
   position: relative;
   display: flex;
   isolation: isolate;
-  min-height: 390px;
+  min-height: 410px;
   aspect-ratio: 3 / 4.6;
   overflow: hidden;
-  border-radius: 24px;
+  border-radius: 10px;
   background: #111827;
-  box-shadow: 0 18px 40px -22px rgb(15 23 42 / 65%), 0 4px 12px -7px rgb(15 23 42 / 40%);
+  box-shadow: 0 4px 16px -10px rgb(15 23 42 / 30%);
   transform: rotateX(var(--rc-rotate-x, 0deg)) rotateY(var(--rc-rotate-y, 0deg));
 }
 
@@ -74,7 +74,7 @@
 .shade {
   z-index: 2;
   pointer-events: none;
-  background: linear-gradient(180deg, rgb(2 6 23 / 12%) 0%, rgb(2 6 23 / 2%) 25%, rgb(2 6 23 / 78%) 57%, #020617 100%);
+  background: linear-gradient(180deg, transparent 25%, rgb(2 6 23 / 18%) 40%, rgb(2 6 23 / 85%) 68%, #020617 100%);
 }
 
 .content {
@@ -103,7 +103,7 @@
 
 .identity {
   margin-top: auto;
-  padding-top: 140px;
+  padding-top: 180px;
 }
 
 .prodi {
@@ -121,7 +121,7 @@
 
 .name {
   min-height: 2.5em;
-  margin: 12px 0 0;
+  margin: 9px 0 0;
   color: #fff;
   font-size: 21px;
   font-weight: 700;
@@ -143,8 +143,8 @@
   display: flex;
   flex-direction: column;
   gap: 5px;
-  margin-top: 16px;
-  padding-top: 12px;
+  margin-top: 12px;
+  padding-top: 10px;
   border-top: 1px solid rgb(255 255 255 / 18%);
 }
 
@@ -173,7 +173,7 @@
 }
 
 @media (min-width: 1280px) {
-  .body { aspect-ratio: auto; min-height: 390px; }
+  .body { aspect-ratio: auto; min-height: 430px; }
   .content { padding: 16px; }
   .name { font-size: 18px; min-height: 3.75em; }
   .nim { font-size: 12px; }

@@ -15,7 +15,7 @@ export default async function GuruMateri() {
       <div>
         <Badge tone="slate">Content Management</Badge>
         <h1 className="text-2xl font-extrabold tracking-tight mt-2">Kelola Modul Bab PJOK</h1>
-        <p className="text-slate-500 text-sm mt-1">Buat, ubah, atau hapus bab materi — termasuk tautan video tutorial YouTube (format embed).</p>
+        <p className="text-slate-500 text-sm mt-1">Kelola materi, video, dan e-book PDF. Modul yang disimpan dapat dibaca oleh publik.</p>
       </div>
       <ModulManager
         initial={modules.map((m) => ({
@@ -24,6 +24,7 @@ export default async function GuruMateri() {
           category: m.category,
           description: m.description,
           videoUrl: m.videoUrl ?? "",
+          pdfUrl: m.pdfUrl ?? "",
           order: m.order,
           quizCount: m.quizzes.length,
         }))}

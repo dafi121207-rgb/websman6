@@ -37,7 +37,7 @@ const MENUS: Record<string, MenuItem[]> = {
   ],
   GURU: [
     { href: "/guru", label: "Overview", icon: LayoutDashboard, exact: true },
-    { href: "/guru/materi", label: "Modul Bab", icon: BookOpen },
+    { href: "/guru/materi", label: "Modul & E-book", icon: BookOpen },
     { href: "/guru/kuis", label: "Bank Kuis", icon: HelpCircle },
     { href: "/guru/absensi", label: "Presensi Lapangan", icon: MapPin },
     { href: "/guru/penilaian", label: "Penilaian Tugas", icon: Award },
@@ -45,6 +45,7 @@ const MENUS: Record<string, MenuItem[]> = {
   ],
   ADMIN: [
     { href: "/admin", label: "Overview", icon: LayoutDashboard, exact: true },
+    { href: "/guru/materi", label: "Modul & E-book", icon: BookOpen },
     { href: "/admin/profil", label: "Profil Sekolah", icon: School },
     { href: "/admin/berita", label: "Manajemen Berita", icon: Newspaper },
     { href: "/admin/pengguna", label: "Data Pengguna", icon: Users },

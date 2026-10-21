@@ -73,7 +73,7 @@ export default function SchoolVideoHero({ tagline }: { tagline: string }) {
   }
 
   return (
-    <section aria-labelledby="hero-title" className="relative isolate flex min-h-[560px] items-center overflow-hidden bg-slate-950 sm:min-h-[620px] lg:min-h-[680px]">
+    <section aria-labelledby="hero-title" className="school-hero">
       {/* Always present, including before hydration or if video loading fails. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={POSTER} alt="" aria-hidden="true" fetchPriority="high" className="absolute inset-0 z-0 h-full w-full object-cover" />
@@ -93,19 +93,19 @@ export default function SchoolVideoHero({ tagline }: { tagline: string }) {
         onError={() => { setFailed(true); setPlaying(false); }}
         className={`pointer-events-none absolute inset-0 z-0 h-full w-full object-cover ${failed ? "hidden" : ""}`}
       />
-      <div aria-hidden="true" className="absolute inset-0 z-10 bg-gradient-to-b from-slate-950/55 via-slate-950/55 to-slate-950/80" />
-      <div className="relative z-20 mx-auto w-full max-w-5xl px-5 py-24 text-center sm:px-8">
-        <p className="mb-5 text-[11px] font-bold uppercase tracking-[0.25em] text-blue-100 sm:text-xs">Portal Pembelajaran PJOK</p>
-        <h1 id="hero-title" className="hero-anim-title text-5xl font-extrabold leading-[1.05] tracking-tight text-white sm:text-7xl lg:text-8xl">
-          SMAN 6 <span className="text-blue-200">GARUT</span>
+      <div aria-hidden="true" className="hero-overlay" />
+      <div className="site-container hero-content">
+        <p className="hero-kicker">Pendidikan Jasmani, Olahraga & Kesehatan</p>
+        <h1 id="hero-title">
+          SMAN 6 GARUT
         </h1>
-        <p className="hero-anim-title mx-auto mt-6 max-w-2xl text-base leading-relaxed text-white sm:text-xl">{tagline}</p>
-        <div className="hero-anim-cta mx-auto mt-9 flex max-w-xl flex-col items-stretch justify-center gap-3.5 sm:flex-row">
-          <Link href="/login" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white shadow-lg transition-colors hover:bg-blue-700 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
-            Masuk sebagai Siswa / Guru <ArrowRight size={17} aria-hidden="true" />
+        <p className="hero-tagline">{tagline}</p>
+        <div className="hero-links">
+          <Link href="/modul" className="site-button">
+            Mulai belajar <ArrowRight size={17} aria-hidden="true" />
           </Link>
-          <Link href="#materi" className="inline-flex min-h-12 items-center justify-center rounded-xl border border-white/60 bg-slate-950/35 px-5 py-3 text-sm font-bold text-white backdrop-blur-sm transition-colors hover:bg-slate-950/65 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
-            Jelajahi Modul Pembelajaran
+          <Link href="/profil-sekolah" className="site-button hero-secondary">
+            Kenali sekolah
           </Link>
         </div>
       </div>

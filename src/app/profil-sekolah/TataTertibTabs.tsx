@@ -111,7 +111,7 @@ export default function TataTertibTabs() {
       </div>
 
       {/* Tab Content Box */}
-      <div className="glass-shell ring-1 ring-black/5 bg-white/80 shadow-md">
+      <div className="rounded-lg border border-slate-200 bg-white">
         <div className="bezel-core p-6 sm:p-8 bg-white/95 space-y-6">
           <div className="flex items-start gap-4 pb-4 border-b border-slate-100">
             <span className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 ring-1 ring-blue-100">

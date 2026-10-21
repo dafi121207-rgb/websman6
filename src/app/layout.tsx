@@ -1,7 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import SwRegister from "@/components/SwRegister";
-import { Geist, Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
+import { Barlow_Condensed, Geist, Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+import "./public.css";
+
+const display = Barlow_Condensed({ subsets: ["latin"], weight: ["600", "700"], variable: "--font-display", display: "swap" });
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -42,7 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="id" className="scroll-smooth">
       <body
-        className={`${jakarta.variable} ${geist.variable} ${geistMono.variable} font-sans bg-[#F5F3EF] text-slate-900 min-h-screen antialiased selection:bg-blue-600 selection:text-white`}
+        className={`${jakarta.variable} ${geist.variable} ${geistMono.variable} ${display.variable} font-sans bg-[#F5F3EF] text-slate-900 min-h-screen antialiased selection:bg-blue-600 selection:text-white`}
         style={{ fontFamily: "var(--font-jakarta), sans-serif" }}
       >
         {children}
