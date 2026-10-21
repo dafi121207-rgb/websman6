@@ -9,7 +9,7 @@ export type Creator = {
   photoPosition?: string;
 };
 
-// Replace a member's photo with a local path when their portrait is available.
+// Keep the placeholder as a graceful fallback when a portrait cannot load.
 export const CREATOR_PLACEHOLDER = "/images/creators/portrait-placeholder.svg";
 
 export const CREATORS: Creator[] = [
@@ -20,7 +20,8 @@ export const CREATORS: Creator[] = [
     campus: "Institut Pendidikan Indonesia",
     initials: "AD",
     accent: "#3b82f6",
-    photo: CREATOR_PLACEHOLDER,
+    photo: "/images/creators/ahmad-dafi.webp",
+    photoPosition: "center 55%",
   },
   {
     name: "Misya Nafisya",
@@ -29,7 +30,8 @@ export const CREATORS: Creator[] = [
     campus: "Institut Pendidikan Indonesia",
     initials: "MN",
     accent: "#c084fc",
-    photo: CREATOR_PLACEHOLDER,
+    photo: "/images/creators/misya-nafisya.webp",
+    photoPosition: "center 38%",
   },
   {
     name: "Qori Salsabil Mauliddina",
@@ -38,7 +40,8 @@ export const CREATORS: Creator[] = [
     campus: "Institut Pendidikan Indonesia",
     initials: "QS",
     accent: "#2dd4bf",
-    photo: CREATOR_PLACEHOLDER,
+    photo: "/images/creators/qori-salsabil.webp",
+    photoPosition: "center 34%",
   },
   {
     name: "Muhammad Rafli",
@@ -47,7 +50,8 @@ export const CREATORS: Creator[] = [
     campus: "Institut Pendidikan Indonesia",
     initials: "MR",
     accent: "#fbbf24",
-    photo: CREATOR_PLACEHOLDER,
+    photo: "/images/creators/muhammad-rafli.webp",
+    photoPosition: "center 56%",
   },
   {
     name: "Bayu Raihan",
@@ -56,6 +60,7 @@ export const CREATORS: Creator[] = [
     campus: "Institut Pendidikan Indonesia",
     initials: "BR",
     accent: "#38bdf8",
-    photo: CREATOR_PLACEHOLDER,
+    photo: "/images/creators/bayu-raihan.webp",
+    photoPosition: "center 66%",
   },
 ];
