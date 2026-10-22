@@ -145,7 +145,7 @@ export default function QuizManager({
   }
 
   return (
-    <div className="space-y-3">
+    <div className="w-full min-w-0 space-y-3">
       {!open ? (
         <PrimaryButton
           icon={Plus}
@@ -169,17 +169,17 @@ export default function QuizManager({
           </div>
           {error && <p className="text-[13px] text-rose-600 font-medium mt-2">{error}</p>}
 
-          <div className="mt-3 grid sm:grid-cols-4 gap-3">
+          <div className="mt-3 grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-4">
             <input
               value={draft.title}
               onChange={(e) => setDraft({ ...draft, title: e.target.value })}
               placeholder="Judul kuis, mis. Kuis Bab 2 — Kebugaran Jasmani"
-              className="sm:col-span-2 px-4 py-2.5 rounded-xl bg-slate-50 ring-1 ring-slate-200 outline-none text-sm focus:ring-2 focus:ring-blue-500"
+              className="w-full min-w-0 sm:col-span-2 px-4 py-2.5 rounded-xl bg-slate-50 ring-1 ring-slate-200 outline-none text-sm focus:ring-2 focus:ring-blue-500"
             />
             <select
               value={draft.moduleId}
               onChange={(e) => setDraft({ ...draft, moduleId: e.target.value })}
-              className="sm:col-span-2 px-4 py-2.5 rounded-xl bg-slate-50 ring-1 ring-slate-200 outline-none text-sm focus:ring-2 focus:ring-blue-500"
+              className="w-full min-w-0 sm:col-span-2 px-4 py-2.5 rounded-xl bg-slate-50 ring-1 ring-slate-200 outline-none text-sm focus:ring-2 focus:ring-blue-500"
             >
               {modules.map((m) => (
                 <option key={m.id} value={m.id}>
@@ -187,17 +187,17 @@ export default function QuizManager({
                 </option>
               ))}
             </select>
-            <label className="text-[12px] font-semibold text-slate-500">
+            <label className="min-w-0 text-[12px] font-semibold text-slate-500">
               Durasi (menit)
               <input
                 type="number"
                 min={5}
                 value={draft.durationMin}
                 onChange={(e) => setDraft({ ...draft, durationMin: Number(e.target.value) })}
-                className="mt-1 w-full px-4 py-2.5 rounded-xl bg-slate-50 ring-1 ring-slate-200 outline-none text-sm focus:ring-2 focus:ring-blue-500"
+                className="mt-1 block w-full min-w-0 px-4 py-2.5 rounded-xl bg-slate-50 ring-1 ring-slate-200 outline-none text-sm focus:ring-2 focus:ring-blue-500"
               />
             </label>
-            <label className="text-[12px] font-semibold text-slate-500">
+            <label className="min-w-0 text-[12px] font-semibold text-slate-500">
               Nilai lulus
               <input
                 type="number"
@@ -205,14 +205,14 @@ export default function QuizManager({
                 max={100}
                 value={draft.passScore}
                 onChange={(e) => setDraft({ ...draft, passScore: Number(e.target.value) })}
-                className="mt-1 w-full px-4 py-2.5 rounded-xl bg-slate-50 ring-1 ring-slate-200 outline-none text-sm focus:ring-2 focus:ring-blue-500"
+                className="mt-1 block w-full min-w-0 px-4 py-2.5 rounded-xl bg-slate-50 ring-1 ring-slate-200 outline-none text-sm focus:ring-2 focus:ring-blue-500"
               />
             </label>
           </div>
 
           <div className="mt-5 space-y-3">
             {draft.questions.map((q, qi) => (
-              <div key={qi} className="p-4 rounded-2xl bg-slate-50 ring-1 ring-slate-200">
+              <div key={qi} className="w-full min-w-0 p-4 rounded-2xl bg-slate-50 ring-1 ring-slate-200">
                 <div className="flex items-center justify-between">
                   <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400">Soal {qi + 1}</p>
                   {draft.questions.length > 1 && (
@@ -230,11 +230,11 @@ export default function QuizManager({
                   value={q.questionText}
                   onChange={(e) => updateQ(qi, { questionText: e.target.value })}
                   placeholder="Tulis pertanyaan..."
-                  className="mt-2 w-full px-4 py-2.5 rounded-xl bg-white ring-1 ring-slate-200 outline-none text-sm focus:ring-2 focus:ring-blue-500"
+                  className="mt-2 block w-full min-w-0 px-4 py-2.5 rounded-xl bg-white ring-1 ring-slate-200 outline-none text-sm focus:ring-2 focus:ring-blue-500"
                 />
-                <div className="mt-2 grid sm:grid-cols-2 gap-2">
+                <div className="mt-2 grid min-w-0 grid-cols-1 gap-2 sm:grid-cols-2">
                   {q.options.map((opt, oi) => (
-                    <div key={oi} className="flex items-center gap-2">
+                    <div key={oi} className="flex min-w-0 items-center gap-2">
                       <button
                         type="button"
                         onClick={() => updateQ(qi, { correctAnswer: oi })}
@@ -257,7 +257,7 @@ export default function QuizManager({
                           updateQ(qi, { options });
                         }}
                         placeholder={`Opsi ${String.fromCharCode(65 + oi)}`}
-                        className="flex-1 px-3 py-2 rounded-xl bg-white ring-1 ring-slate-200 outline-none text-[13px] focus:ring-2 focus:ring-blue-500"
+                        className="block w-full min-w-0 flex-1 px-3 py-2 rounded-xl bg-white ring-1 ring-slate-200 outline-none text-[13px] focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
                   ))}
@@ -266,7 +266,7 @@ export default function QuizManager({
                   value={q.explanation}
                   onChange={(e) => updateQ(qi, { explanation: e.target.value })}
                   placeholder="Pembahasan singkat (tampil setelah kuis selesai)"
-                  className="mt-2 w-full px-4 py-2 rounded-xl bg-white ring-1 ring-slate-200 outline-none text-[12px] focus:ring-2 focus:ring-blue-500"
+                  className="mt-2 block w-full min-w-0 px-4 py-2 rounded-xl bg-white ring-1 ring-slate-200 outline-none text-[12px] focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             ))}
@@ -288,7 +288,7 @@ export default function QuizManager({
         </DoubleBezel>
       )}
 
-      <div className="grid sm:grid-cols-2 gap-3">
+      <div className="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2">
         {list.map((q) => (
           <div key={q.id} className="glass-shell ring-1 ring-black/5">
             <div className="bezel-core p-4 flex items-start justify-between gap-3">
