@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowUpRight, PlayCircle } from "lucide-react";
 import prisma from "@/lib/prisma";
 import { Badge } from "@/components/ui";
+import { EmptyState } from "@/components/PageStates";
 
 export const dynamic = "force-dynamic";
 
@@ -15,6 +16,7 @@ export default async function SiswaMateri() {
         <h1 className="text-2xl font-extrabold tracking-tight mt-2">Modul Materi PJOK</h1>
       </div>
 
+      {modules.length === 0 && <EmptyState title="Materi belum tersedia" description="Materi dari guru akan tampil di sini setelah diterbitkan." href="/siswa" action="Kembali ke ruang belajar" />}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {modules.map((m) => (
           <Link key={m.id} href={`/siswa/materi/${m.id}`} className="glass-shell ring-1 ring-black/5 misi-card block">

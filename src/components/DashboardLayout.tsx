@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Award,
   BookOpen,
@@ -36,7 +36,7 @@ const MENUS: Record<string, MenuItem[]> = {
     { href: "/siswa/kuis", label: "Kuis & Evaluasi", icon: HelpCircle },
   ],
   GURU: [
-    { href: "/guru", label: "Overview", icon: LayoutDashboard, exact: true },
+    { href: "/guru", label: "Ruang Guru", icon: LayoutDashboard, exact: true },
     { href: "/guru/materi", label: "Modul & E-book", icon: BookOpen },
     { href: "/guru/kuis", label: "Bank Kuis", icon: HelpCircle },
     { href: "/guru/absensi", label: "Presensi Lapangan", icon: MapPin },
@@ -44,7 +44,7 @@ const MENUS: Record<string, MenuItem[]> = {
     { href: "/guru/rekap", label: "Rekap & Ekspor", icon: FileSpreadsheet },
   ],
   ADMIN: [
-    { href: "/admin", label: "Overview", icon: LayoutDashboard, exact: true },
+    { href: "/admin", label: "Ruang Admin", icon: LayoutDashboard, exact: true },
     { href: "/guru/materi", label: "Modul & E-book", icon: BookOpen },
     { href: "/admin/profil", label: "Profil Sekolah", icon: School },
     { href: "/admin/berita", label: "Manajemen Berita", icon: Newspaper },
@@ -68,6 +68,29 @@ export default function DashboardLayout({
   const router = useRouter();
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
+  const [logoutError, setLogoutError] = useState("");
+  const menuButton = useRef<HTMLButtonElement>(null);
+  const drawer = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    drawer.current?.querySelector<HTMLButtonElement>("button")?.focus();
+    function onKey(event: KeyboardEvent) {
+      if (event.key === "Escape") setMobileOpen(false);
+      if (event.key === "Tab") {
+        const items = drawer.current?.querySelectorAll<HTMLElement>('a[href], button:not([disabled])');
+        if (!items?.length) return;
+        const first = items[0], last = items[items.length - 1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+      }
+    }
+    document.addEventListener("keydown", onKey);
+    return () => { document.body.style.overflow = previous; document.removeEventListener("keydown", onKey); menuButton.current?.focus(); };
+  }, [mobileOpen]);
 
   const menus = MENUS[user.role] ?? MENUS.SISWA;
   const roleInfo = ROLE_CONFIG[user.role] ?? {
@@ -76,9 +99,12 @@ export default function DashboardLayout({
   };
 
   async function logout() {
-    await fetch("/api/auth/logout", { method: "POST" });
-    router.push("/login");
-    router.refresh();
+    setLoggingOut(true); setLogoutError("");
+    try {
+      const response = await fetch("/api/auth/logout", { method: "POST" });
+      if (!response.ok) throw new Error();
+      router.push("/login"); router.refresh();
+    } catch { setLogoutError("Belum bisa keluar. Coba lagi."); setLoggingOut(false); }
   }
 
   // Get user initials for avatar
@@ -127,7 +153,7 @@ export default function DashboardLayout({
         </div>
 
         {/* Navigation Section */}
-        <div className="p-3 space-y-1">
+        <nav aria-label="Menu dashboard" className="p-3 space-y-1">
           <p className="px-3 pt-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
             Navigasi Utama
           </p>
@@ -142,10 +168,11 @@ export default function DashboardLayout({
               <Link
                 key={m.href}
                 href={m.href}
+                aria-current={isActive ? "page" : undefined}
                 onClick={() => setMobileOpen(false)}
-                className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                className={`flex min-h-11 items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-semibold transition-colors cursor-pointer ${
                   isActive
-                    ? "bg-blue-600 text-white shadow-sm shadow-blue-500/25"
+                    ? "bg-[#17324d] text-white"
                     : "text-slate-600 hover:text-slate-900 hover:bg-stone-200/60"
                 }`}
               >
@@ -154,7 +181,8 @@ export default function DashboardLayout({
               </Link>
             );
           })}
-        </div>
+          <Link href="/" onClick={() => setMobileOpen(false)} className="mt-6 flex min-h-11 items-center gap-3 border-t border-slate-200 px-3.5 pt-4 text-sm text-slate-600"><School size={17} />Website sekolah</Link>
+        </nav>
       </div>
 
       {/* Bottom User Profile Section */}
@@ -176,20 +204,22 @@ export default function DashboardLayout({
 
           <button
             onClick={logout}
+            disabled={loggingOut}
             className="w-full flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-rose-600 hover:bg-rose-50 border border-rose-200/60 transition-colors cursor-pointer"
           >
             <LogOut size={13} />
-            <span>Keluar Akun</span>
+            <span>{loggingOut ? "Keluar…" : "Keluar Akun"}</span>
           </button>
+          {logoutError && <p role="alert" className="text-xs text-rose-700">{logoutError}</p>}
         </div>
       </div>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-[#F5F3EF] flex">
+    <div className="school-workspace min-h-screen flex">
       {/* Desktop Sidebar (Fixed Left) */}
-      <aside className="hidden lg:flex w-64 shrink-0 flex-col border-r border-stone-200/80 bg-white/70 backdrop-blur-xl h-screen sticky top-0 z-30">
+      <aside className="hidden lg:flex w-64 shrink-0 flex-col border-r border-slate-200 bg-white h-screen sticky top-0 z-30 overflow-y-auto">
         {sidebarContent}
       </aside>
 
@@ -203,11 +233,12 @@ export default function DashboardLayout({
           />
 
           {/* Drawer Sidebar */}
-          <aside className="relative w-72 max-w-[80vw] bg-[#F5F3EF] border-r border-stone-200 h-full flex flex-col z-10 shadow-2xl overflow-y-auto overscroll-contain">
+          <aside ref={drawer} role="dialog" aria-modal="true" aria-label="Navigasi dashboard" id="mobile-dashboard-menu" className="relative w-72 max-w-[85vw] bg-white border-r border-stone-200 h-full flex flex-col z-10 shadow-2xl overflow-y-auto overscroll-contain">
             <div className="absolute top-4 right-3">
               <button
                 onClick={() => setMobileOpen(false)}
-                className="p-1.5 rounded-lg text-slate-400 hover:bg-stone-200/60"
+                aria-label="Tutup menu"
+                className="p-3 rounded-lg text-slate-600 hover:bg-stone-200/60"
               >
                 <X size={18} />
               </button>
@@ -220,18 +251,21 @@ export default function DashboardLayout({
       {/* Main Area */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top Header Bar */}
-        <header className="h-16 px-4 sm:px-8 border-b border-stone-200/70 bg-[#F5F3EF]/80 backdrop-blur-md sticky top-0 z-20 flex items-center justify-between">
+        <header className="h-16 shrink-0 px-4 sm:px-8 border-b border-slate-200 bg-[#f6f7f5]/95 sticky top-0 z-20 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <button
+              ref={menuButton}
               onClick={() => setMobileOpen(true)}
               className="lg:hidden p-2 rounded-xl text-slate-700 hover:bg-stone-200/60 border border-stone-200/80 cursor-pointer"
               aria-label="Buka Menu"
+              aria-expanded={mobileOpen}
+              aria-controls="mobile-dashboard-menu"
             >
               <Menu size={18} />
             </button>
-            <div className="hidden sm:block">
+            <div className="min-w-0">
               <p className="text-xs font-bold text-slate-900 leading-tight">
-                Portal Pembelajaran PJOK
+                {menus.find((item) => item.exact ? pathname === item.href : pathname.startsWith(item.href))?.label ?? "Pembelajaran PJOK"}
               </p>
               <p className="text-[11px] text-slate-500 font-medium">SMAN 6 Garut</p>
             </div>
@@ -239,8 +273,8 @@ export default function DashboardLayout({
 
           <div className="flex items-center gap-3">
             <div className="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-stone-200/80 text-[11px] font-semibold text-slate-600 shadow-2xs">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>Sesi Aktif</span>
+              <span className="w-2 h-2 rounded-full bg-emerald-600" />
+              <span>{roleInfo.label}</span>
             </div>
 
             <div className="lg:hidden flex items-center gap-2 pl-2 border-l border-stone-200">

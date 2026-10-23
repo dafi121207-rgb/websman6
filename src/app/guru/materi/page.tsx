@@ -13,8 +13,8 @@ export default async function GuruMateri() {
   return (
     <div className="space-y-4">
       <div>
-        <Badge tone="slate">Content Management</Badge>
-        <h1 className="text-2xl font-extrabold tracking-tight mt-2">Kelola Modul Bab PJOK</h1>
+        <Badge tone="slate">Bahan pembelajaran</Badge>
+        <h1 className="text-2xl font-extrabold tracking-tight mt-2">Modul & e-book</h1>
         <p className="text-slate-500 text-sm mt-1">Kelola materi, video, dan e-book PDF. Modul yang disimpan dapat dibaca oleh publik.</p>
       </div>
       <ModulManager

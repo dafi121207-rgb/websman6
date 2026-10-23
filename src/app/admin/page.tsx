@@ -2,6 +2,8 @@ import Link from "next/link";
 import { Newspaper, School, UserPlus } from "lucide-react";
 import prisma from "@/lib/prisma";
 import { Badge, DoubleBezel } from "@/components/ui";
+import { DashboardIntro, DashboardStats } from "@/components/DashboardIntro";
+import { EmptyState } from "@/components/PageStates";
 
 export const dynamic = "force-dynamic";
 
@@ -23,58 +25,39 @@ export default async function AdminOverview() {
   ];
 
   return (
-    <div className="space-y-5">
-      <div>
-        <Badge tone="slate">Master Admin Console</Badge>
-        <h1 className="text-3xl font-extrabold tracking-tight mt-2 text-slate-900">
-          Konsol Admin Sekolah
-        </h1>
-        <p className="text-slate-500 text-sm mt-1">
-          Kelola profil resmi sekolah, berita &amp; pengumuman, dan akun pengguna.
-        </p>
-      </div>
-
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-        {stats.map((s) => (
-          <Link
-            key={s.label}
-            href={s.href}
-            className="glass-shell ring-1 ring-black/5 hover:ring-blue-300 transition bg-white/70"
-          >
-            <div className="bezel-core p-4 bg-white/95">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{s.label}</p>
-              <p className="text-2xl font-extrabold text-slate-900 mt-1">{s.value}</p>
-            </div>
-          </Link>
-        ))}
-      </div>
+    <div className="space-y-7">
+      <DashboardIntro eyebrow="SMAN 6 Garut / Ruang admin" title="Informasi sekolah, terkelola." description="Perbarui kabar sekolah, materi pembelajaran, dan akses warga sekolah." href="/admin/berita" action="Kelola kabar sekolah" />
+      <DashboardStats items={stats} />
 
       <DoubleBezel>
-        <h2 className="font-extrabold text-base text-slate-900">Pintasan Manajemen</h2>
-        <div className="mt-3.5 flex flex-wrap gap-3">
+        <h2 className="font-extrabold text-base text-slate-900">Kelola website sekolah</h2>
+        <p className="mt-2 text-sm text-slate-600">Mulai dari informasi yang perlu diperbarui.</p>
+        <div className="mt-5 grid gap-3 sm:grid-cols-3">
           <Link
             href="/admin/profil"
-            className="inline-flex items-center gap-2.5 px-4.5 py-2.5 rounded-xl text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 active:scale-[0.98] shadow-sm shadow-blue-500/20 transition cursor-pointer"
+            className="flex min-h-20 items-center gap-3 rounded-lg border border-slate-200 p-4 text-sm font-semibold text-slate-800 hover:bg-blue-50"
           >
             <School size={16} />
             <span>Perbarui Profil Sekolah</span>
           </Link>
           <Link
             href="/admin/berita"
-            className="inline-flex items-center gap-2.5 px-4.5 py-2.5 rounded-xl text-xs font-semibold text-slate-800 bg-white hover:bg-slate-50 border border-slate-200/90 shadow-sm active:scale-[0.98] transition cursor-pointer"
+            className="flex min-h-20 items-center gap-3 rounded-lg border border-slate-200 p-4 text-sm font-semibold text-slate-800 hover:bg-blue-50"
           >
             <Newspaper size={16} className="text-slate-500" />
             <span>Kelola Berita &amp; Pengumuman</span>
           </Link>
           <Link
             href="/admin/pengguna"
-            className="inline-flex items-center gap-2.5 px-4.5 py-2.5 rounded-xl text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] shadow-sm shadow-emerald-500/20 transition cursor-pointer"
+            className="flex min-h-20 items-center gap-3 rounded-lg border border-slate-200 p-4 text-sm font-semibold text-slate-800 hover:bg-blue-50"
           >
             <UserPlus size={16} />
             <span>Tambah Akun Pengguna</span>
           </Link>
         </div>
+        {newsCount === 0 && <EmptyState title="Belum ada berita sekolah" description="Terbitkan kabar pertama untuk ditampilkan di website." href="/admin/berita" action="Tulis berita" />}
       </DoubleBezel>
+      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 pt-5 text-sm"><p className="text-slate-600">Tinjau hasil perubahan dari sisi pengunjung.</p><Link href="/" className="font-semibold text-blue-700 hover:underline">Buka website sekolah ↗</Link></div>
     </div>
   );
 }

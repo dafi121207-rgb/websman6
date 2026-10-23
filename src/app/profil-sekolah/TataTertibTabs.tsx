@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import {
   CheckCircle2,
   ShieldAlert,
   HeartHandshake,
   BookMarked,
   Scale,
+  ChevronDown,
 } from "lucide-react";
 
 const TABS = [
@@ -82,69 +82,27 @@ const TABS = [
 ];
 
 export default function TataTertibTabs() {
-  const [activeTab, setActiveTab] = useState(TABS[0].id);
-  const current = TABS.find((t) => t.id === activeTab) || TABS[0];
-  const CurrentIcon = current.icon;
-
   return (
-    <div className="space-y-6">
-      {/* Tab Navigation Pill Buttons */}
-      <div className="flex flex-wrap gap-2 p-1.5 rounded-2xl bg-slate-200/60 border border-slate-300/60">
-        {TABS.map((tab) => {
-          const Icon = tab.icon;
-          const isActive = tab.id === activeTab;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
-                isActive
-                  ? "bg-white text-blue-600 shadow-sm ring-1 ring-black/5"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-white/60"
-              }`}
-            >
-              <Icon size={16} className={isActive ? "text-blue-600" : "text-slate-400"} />
-              <span>{tab.label}</span>
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Tab Content Box */}
-      <div className="rounded-lg border border-slate-200 bg-white">
-        <div className="bezel-core p-6 sm:p-8 bg-white/95 space-y-6">
-          <div className="flex items-start gap-4 pb-4 border-b border-slate-100">
-            <span className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 ring-1 ring-blue-100">
-              <CurrentIcon size={24} />
-            </span>
-            <div>
-              <h3 className="text-xl font-extrabold text-slate-900">{current.label}</h3>
-              <p className="text-xs sm:text-sm text-slate-500 mt-0.5">{current.description}</p>
-            </div>
+    <div className="rules-list overflow-hidden rounded-xl border border-slate-200 bg-white">
+      {TABS.map((tab, index) => {
+        const Icon = tab.icon;
+        return <details key={tab.id} name="school-rules" open={index === 0} className="group border-b border-slate-200 last:border-0">
+          <summary className="flex min-h-16 cursor-pointer list-none items-center gap-3 px-4 py-4 outline-offset-[-3px] focus-visible:outline-2 focus-visible:outline-blue-600 sm:px-6">
+            <Icon size={20} className="shrink-0 text-blue-700" aria-hidden="true" />
+            <h3 className="min-w-0 flex-1 text-sm font-bold text-slate-900 sm:text-base">{tab.label}</h3>
+            <span className="shrink-0 text-xs text-slate-500">{tab.points.length} poin</span>
+            <ChevronDown size={18} className="rules-chevron shrink-0 text-slate-500 transition-transform" aria-hidden="true" />
+          </summary>
+          <div className="px-4 pb-3 sm:px-6">
+            <ol className="divide-y divide-slate-100 border-t border-slate-200">
+              {tab.points.map((point, i) => <li key={point} className="flex gap-4 py-4">
+                <span aria-hidden="true" className="w-5 shrink-0 pt-0.5 text-xs font-bold tabular-nums text-blue-700">{String(i + 1).padStart(2, "0")}</span>
+                <p className="max-w-3xl text-sm leading-7 text-slate-700">{point}</p>
+              </li>)}
+            </ol>
           </div>
-
-          <div className="grid sm:grid-cols-2 gap-3.5">
-            {current.points.map((point, i) => (
-              <div
-                key={i}
-                className="flex items-start gap-3 p-3.5 rounded-xl bg-slate-50/80 border border-slate-200/80 hover:bg-blue-50/40 hover:border-blue-200 transition-colors"
-              >
-                <span className="shrink-0 w-6 h-6 rounded-lg bg-blue-600/10 text-blue-600 font-bold text-xs flex items-center justify-center mt-0.5">
-                  {i + 1}
-                </span>
-                <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
-                  {point}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          <div className="pt-2 flex items-center justify-between text-[11px] text-slate-400 border-t border-slate-100">
-            <span>Standar Operasional Prosedur (SOP) Tata Tertib Siswa SMAN 6 Garut</span>
-            <span className="font-semibold text-slate-500">MANDIRI & BERKARAKTER</span>
-          </div>
-        </div>
-      </div>
+        </details>;
+      })}
     </div>
   );
 }

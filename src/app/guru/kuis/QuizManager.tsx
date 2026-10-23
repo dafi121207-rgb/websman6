@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Plus, Save, Trash2, XCircle } from "lucide-react";
 import { Badge, DoubleBezel, PrimaryButton } from "@/components/ui";
+import { EmptyState, SchoolLoading } from "@/components/PageStates";
 
 type QuizList = {
   id: string;
@@ -288,6 +289,8 @@ export default function QuizManager({
         </DoubleBezel>
       )}
 
+      {loading && <SchoolLoading compact label="Menyimpan perubahan kuis…" />}
+      {list.length === 0 && !open && <EmptyState title="Bank kuis masih kosong" description={modules.length ? "Gunakan tombol susun kuis untuk membuat evaluasi pertama." : "Tambahkan modul terlebih dahulu sebelum membuat kuis."} href={modules.length ? undefined : "/guru/materi"} action="Buat modul" />}
       <div className="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2">
         {list.map((q) => (
           <div key={q.id} className="glass-shell ring-1 ring-black/5">

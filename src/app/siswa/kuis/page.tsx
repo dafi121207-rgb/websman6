@@ -3,6 +3,7 @@ import { getSession } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { ArrowUpRight } from "lucide-react";
 import { Badge, statusBadgeTone } from "@/components/ui";
+import { EmptyState } from "@/components/PageStates";
 
 export const dynamic = "force-dynamic";
 
@@ -27,6 +28,7 @@ export default async function SiswaKuis() {
         <p className="text-slate-500 text-sm mt-1">Soal diacak tiap sesi, dinilai otomatis langsung setelah submit.</p>
       </div>
 
+      {quizzes.length === 0 && <EmptyState title="Belum ada kuis" description="Sambil menunggu kuis dari guru, kamu bisa membaca materi." href="/siswa/materi" action="Baca materi" />}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {quizzes.map((q) => {
           const attempt = q.attempts[0];

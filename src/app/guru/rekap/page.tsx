@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { Badge, DoubleBezel, PrimaryButton, statusBadgeTone } from "@/components/ui";
 import { Download } from "lucide-react";
+import { EmptyState } from "@/components/PageStates";
 
 export const dynamic = "force-dynamic";
 
@@ -67,7 +68,7 @@ export default async function GuruRekap() {
               <Badge tone={statusBadgeTone(a.isPassed ? "LULUS" : "GAGAL")}>{a.score}</Badge>
             </div>
           ))}
-          {attempts.length === 0 && <p className="py-2 text-[13px] text-slate-400">Belum ada attempt kuis.</p>}
+          {attempts.length === 0 && <EmptyState title="Belum ada hasil kuis" description="Nilai akan muncul setelah siswa menyelesaikan kuis." />}
         </div>
       </DoubleBezel>
 
@@ -82,7 +83,7 @@ export default async function GuruRekap() {
               <Badge tone={statusBadgeTone(s.status)}>{s.status === "GRADED" ? s.score : s.status}</Badge>
             </div>
           ))}
-          {submissions.length === 0 && <p className="py-2 text-[13px] text-slate-400">Belum ada submission.</p>}
+          {submissions.length === 0 && <EmptyState title="Belum ada hasil praktik" description="Tugas yang dikirim siswa akan masuk ke rekap ini." />}
         </div>
       </DoubleBezel>
     </div>

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Badge, DoubleBezel, statusBadgeTone } from "@/components/ui";
+import { EmptyState, SchoolLoading } from "@/components/PageStates";
 
 type Sub = {
   id: string;
@@ -19,30 +20,40 @@ export default function PenilaianClient({ initial }: { initial: Sub[] }) {
   const [subs, setSubs] = useState(initial);
   const [expanded, setExpanded] = useState<string | null>(null);
   const [scores, setScores] = useState<Record<string, string>>({});
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
 
   async function grade(sub: Sub, status: "GRADED" | "REJECTED") {
+    if (saving) return;
+    setError("");
     const score = status === "GRADED" ? Number(scores[sub.id] || "0") : null;
-    const res = await fetch(`/api/submissions/${sub.id}`, {
+    if (status === "GRADED" && (!scores[sub.id]?.trim() || score === null || !Number.isFinite(score) || score < 0 || score > 100)) { setError("Isi nilai antara 0 dan 100."); return; }
+    setSaving(true);
+    try {
+      const res = await fetch(`/api/submissions/${sub.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status, ...(score !== null && Number.isFinite(score) ? { score } : {}) }),
     });
-    if (res.ok) {
+    if (!res.ok) throw new Error("Nilai belum tersimpan. Coba lagi.");
       setSubs((ss) => ss.map((x) => (x.id === sub.id ? { ...x, status, score: score ?? null } : x)));
       setExpanded(null);
-    }
+    } catch { setError("Nilai belum tersimpan. Periksa koneksi lalu coba lagi."); }
+    finally { setSaving(false); }
   }
 
   if (subs.length === 0) {
     return (
       <DoubleBezel>
-        <p className="text-sm text-slate-400">Belum ada tugas praktik yang dikumpulkan siswa.</p>
+        <EmptyState title="Belum ada tugas untuk diperiksa" description="Hasil praktik yang dikumpulkan siswa akan tampil di sini." />
       </DoubleBezel>
     );
   }
 
   return (
     <div className="space-y-3">
+      {error && <p role="alert" className="rounded-lg bg-rose-50 p-3 text-sm text-rose-800">{error}</p>}
+      {saving && <SchoolLoading compact label="Menyimpan penilaian…" />}
       {subs.map((s) => {
         const mediaPath = s.mediaUrl?.split("?")[0] ?? "";
         const isVideo = /\.(mp4|webm|mov|ogg|avi)$/i.test(mediaPath);
@@ -67,6 +78,7 @@ export default function PenilaianClient({ initial }: { initial: Sub[] }) {
                     <Badge tone="amber">Menunggu</Badge>
                   )}
                   <button
+                    disabled={saving}
                     onClick={() => setExpanded(expanded !== s.id ? s.id : null)}
                     className="px-3 py-1.5 rounded-xl bg-slate-900 text-white text-[11px] font-bold hover:opacity-90"
                   >
@@ -91,6 +103,7 @@ export default function PenilaianClient({ initial }: { initial: Sub[] }) {
                   </div>
                   <div className="mt-3 flex flex-wrap items-center gap-2">
                     <input
+                      disabled={saving}
                       type="number"
                       min={0}
                       max={100}
@@ -100,12 +113,14 @@ export default function PenilaianClient({ initial }: { initial: Sub[] }) {
                       className="w-32 px-3 py-2 rounded-xl bg-slate-50 ring-1 ring-slate-200 outline-none text-sm focus:ring-2 focus:ring-blue-500"
                     />
                     <button
+                      disabled={saving}
                       onClick={() => grade(s, "GRADED")}
                       className="px-4 py-2 rounded-xl bg-emerald-600 text-white text-[12px] font-bold hover:bg-emerald-500"
                     >
                       Simpan Nilai
                     </button>
                     <button
+                      disabled={saving}
                       onClick={() => grade(s, "REJECTED")}
                       className="px-4 py-2 rounded-xl bg-rose-600 text-white text-[12px] font-bold hover:bg-rose-500"
                     >

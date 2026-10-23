@@ -3,6 +3,8 @@ import { BookOpen, Camera, ClipboardList, HelpCircle } from "lucide-react";
 import { getSession } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { Badge, DoubleBezel } from "@/components/ui";
+import { DashboardIntro, DashboardStats } from "@/components/DashboardIntro";
+import { EmptyState } from "@/components/PageStates";
 
 export const dynamic = "force-dynamic";
 
@@ -61,59 +63,27 @@ export default async function SiswaDashboard() {
   ];
 
   return (
-    <div className="space-y-5">
-      <div>
-        <Badge tone="slate">Kelas {session.kelas ?? "-"}</Badge>
-        <h1 className="text-3xl font-extrabold tracking-tight mt-2 text-slate-900">
-          Selamat Datang, <span className="text-blue-600">{session.name.split(",")[0]}</span>
-        </h1>
-        <p className="text-slate-500 text-sm mt-1">Akses materi, kuis, tugas, dan absensi PJOK.</p>
-      </div>
+    <div className="space-y-7">
+      <DashboardIntro eyebrow={`PJOK / Kelas ${session.kelas ?? "—"}`} title={`Halo, ${session.name.split(",")[0]}.`} description="Baca materi, latih keterampilan, dan catat progres belajarmu." href="/siswa/materi" action="Mulai belajar" />
 
       {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        {stats.map((s) => (
-          <Link key={s.label} href={s.href} className="glass-shell ring-1 ring-black/5 hover:ring-blue-300 transition bg-white/70">
-            <div className="bezel-core p-5 bg-white/95">
-              <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400">{s.label}</p>
-              <p className="text-3xl font-extrabold text-slate-900 mt-1">{s.value}</p>
-            </div>
-          </Link>
-        ))}
-      </div>
+      <DashboardStats items={stats} />
 
       {/* Quick actions with photo backgrounds instead of solid gradient fills */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
+      <section><h2 className="mb-4 text-lg font-bold text-slate-900">Kegiatan belajarmu</h2><div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6">
         {QUICK.map((q) => (
-          <Link key={q.href} href={q.href} className="glass-shell ring-1 ring-black/5 group overflow-hidden bg-white/70">
-            <div className="bezel-core! p-0 rounded-[1.5rem] h-36 relative overflow-hidden">
-              {/* Background Photo */}
-              <img
-                src={q.image}
-                alt={q.label}
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
-              />
-              {/* Dark Scrim */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/20" />
-              {/* Glass Icon Pill */}
-              <div className="absolute top-3.5 left-3.5 p-2 rounded-xl bg-white/20 backdrop-blur-md ring-1 ring-white/30 text-white">
-                <q.icon size={18} />
-              </div>
-              {/* Card Label */}
-              <div className="absolute bottom-3 left-3.5 right-3">
-                <p className="text-white text-sm font-bold leading-tight">{q.label}</p>
-                <p className="text-white/75 text-[11px] mt-0.5 font-medium">{q.sub}</p>
-              </div>
-            </div>
+          <Link key={q.href} href={q.href} className="group flex items-center gap-4 border-b border-slate-200 py-5 hover:bg-blue-50/50">
+            <q.icon size={22} className="shrink-0 text-blue-700" />
+            <div className="flex-1"><p className="text-sm font-bold text-slate-900">{q.label}</p><p className="mt-1 text-xs text-slate-600">{q.sub}</p></div><span aria-hidden="true" className="pr-3 text-blue-700">↗</span>
           </Link>
         ))}
-      </div>
+      </div></section>
 
       {/* Recent submissions */}
       <DoubleBezel>
         <h2 className="font-extrabold tracking-tight text-slate-900">Tugas Terakhir</h2>
         {subs.length === 0 ? (
-          <p className="text-sm text-slate-400 mt-3">Belum ada tugas yang dikumpulkan. Yuk buka menu Tugas!</p>
+          <EmptyState title="Belum ada tugas terkumpul" description="Lihat instruksi praktik, lalu kirim hasil tugasmu." href="/siswa/tugas" action="Lihat tugas praktik" />
         ) : (
           <div className="mt-3 divide-y divide-slate-100">
             {subs.map((s) => (
@@ -127,7 +97,7 @@ export default async function SiswaDashboard() {
                 <Badge tone={
                   s.status === "GRADED" ? "emerald" : s.status === "REJECTED" ? "rose" : "amber"
                 }>
-                  {s.status === "GRADED" ? `Nilai ${s.score}` : s.status}
+                  {s.status === "GRADED" ? `Nilai ${s.score}` : s.status === "REJECTED" ? "Perlu revisi" : "Menunggu penilaian"}
                 </Badge>
               </div>
             ))}
