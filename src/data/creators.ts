@@ -31,7 +31,7 @@ export const CREATORS: Creator[] = [
     initials: "MN",
     accent: "#c084fc",
     photo: "/images/creators/misya-nafisya.webp",
-    photoPosition: "center 38%",
+    photoPosition: "center 52%",
   },
   {
     name: "Qori Salsabil Mauliddina",
