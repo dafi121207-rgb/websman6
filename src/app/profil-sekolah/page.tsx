@@ -23,7 +23,17 @@ export default async function ProfilSekolahPage() {
   try { const value: unknown = JSON.parse(profile?.mission ?? "[]"); if (Array.isArray(value)) missions = value.filter((item): item is string => typeof item === "string"); } catch { /* Keep the rest of the profile readable if mission data is invalid. */ }
   return <PublicShell><main id="main-content" className="public-main">
     <header className="page-heading"><div className="site-container"><Link href="/" className="breadcrumb"><ArrowLeft size={14} /> Beranda</Link><p className="eyebrow">Profil sekolah</p><h1>SMA Negeri 6 Garut</h1><p className="section-intro">Tarogong Kidul, Kabupaten Garut, Jawa Barat.</p></div></header>
-    <section className="site-section"><div className="site-container"><SchoolGallery photos={SCHOOL_PHOTOS} /><dl className="identity-grid mt-8">{IDENTITY.map(([label,value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl></div></section>
+    <section className="site-section"><div className="site-container"><SchoolGallery photos={SCHOOL_PHOTOS} />
+      <figure className="school-principal" aria-labelledby="principal-name">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/images/school/kepala-sekolah-suharto.webp" alt="M. E. Suharto, S.Sos., M.Pd., Kepala SMA Negeri 6 Garut" width={640} height={1001} loading="lazy" decoding="async" />
+        <figcaption>
+          <p className="eyebrow">Kepala sekolah</p>
+          <h2 id="principal-name">M. E. Suharto, S.Sos., M.Pd.</h2>
+          <p className="principal-school">SMA Negeri 6 Garut</p>
+        </figcaption>
+      </figure>
+      <dl className="identity-grid mt-8">{IDENTITY.map(([label,value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl></div></section>
     <section id="visi-misi" className="site-section section-tint"><div className="site-container purpose-layout"><div><p className="eyebrow">Visi sekolah</p><h2 className="section-title">{profile?.vision ?? "Mandiri, kompetitif, dan berwawasan lingkungan"}</h2></div><div><p className="eyebrow">Misi sekolah</p><ol className="mission-list">{missions.map((mission,i) => <li key={i}>{mission}</li>)}</ol></div></div></section>
     <section id="tata-tertib" className="site-section"><div className="site-container"><div className="section-heading"><div><p className="eyebrow">Kehidupan sekolah</p><h2 className="section-title">Tata tertib siswa</h2></div></div><TataTertibTabs /></div></section>
     <section className="site-section section-tint"><div className="site-container section-heading"><div><p className="eyebrow">Pembelajaran PJOK</p><h2 className="section-title">Siap untuk belajar?</h2></div><Link href="/modul" className="site-button">Buka modul <ArrowRight size={18} /></Link></div></section>
