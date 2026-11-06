@@ -1,68 +1,56 @@
 "use client";
 
 import { useEffect } from "react";
-import gsap from "gsap";
+import { usePathname } from "next/navigation";
 
+/** Progressive enhancement: content stays visible without JS or motion support. */
 export default function LandingAnimations() {
+  const pathname = usePathname();
+
   useEffect(() => {
-    // Check if user prefers reduced motion
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReducedMotion) return;
-
-    const ctx = gsap.context(() => {
-      // Hero headline & buttons entrance animation
-      gsap.from(".hero-anim-title", {
-        opacity: 0,
-        y: 35,
-        duration: 1,
-        ease: "power3.out",
-        stagger: 0.15,
-      });
-
-      gsap.from(".hero-anim-cta", {
-        opacity: 0,
-        y: 20,
-        duration: 0.8,
-        delay: 0.3,
-        ease: "power2.out",
-        stagger: 0.1,
-      });
-
-      // Visi card entrance
-      gsap.from(".visi-card-anim", {
-        opacity: 0,
-        y: 30,
-        scale: 0.98,
-        duration: 0.9,
-        delay: 0.45,
-        ease: "power3.out",
-      });
-
-      // Stagger items on scroll/view
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              const el = entry.target;
-              gsap.fromTo(
-                el,
-                { opacity: 0, y: 25 },
-                { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" }
-              );
-              observer.unobserve(el);
-            }
-          });
-        },
-        { threshold: 0.15 }
+    if (pathname !== "/" && pathname !== "/profil-sekolah") return;
+    const main = document.getElementById("main-content");
+    if (!main || !("IntersectionObserver" in window) || !Element.prototype.animate) return;
+    const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const animations = new Set<Animation>();
+    let observer: IntersectionObserver | undefined;
+    const play = (element: Element, delay = 0, distance = 12) => {
+      if (preference.matches || element.contains(document.activeElement)) return;
+      const animation = element.animate(
+        [{ opacity: 0, transform: `translateY(${distance}px)` }, { opacity: 1, transform: "translateY(0)" }],
+        { duration: 480, delay, easing: "cubic-bezier(.2,.7,.2,1)", fill: "backwards" },
       );
-
-      document.querySelectorAll(".gsap-reveal").forEach((item) => {
-        observer.observe(item);
+      animations.add(animation);
+      animation.onfinish = () => { animations.delete(animation); animation.cancel(); };
+    };
+    const stop = () => {
+      observer?.disconnect();
+      animations.forEach((animation) => animation.cancel());
+      animations.clear();
+    };
+    if (!preference.matches) {
+      main.querySelectorAll(".hero-kicker, .hero-content h1, .hero-tagline, .hero-links").forEach((element, index) => {
+        if (element.getBoundingClientRect().bottom > 0) play(element, index * 65, 10);
       });
-    });
-
-    return () => ctx.revert();
-  }, []);
+      const delays = new Map<Element, number>();
+      main.querySelectorAll(".purpose-list, .mission-list").forEach((list) => {
+        Array.from(list.children).forEach((item, index) => delays.set(item, Math.min(index, 3) * 55));
+      });
+      observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          observer?.unobserve(entry.target);
+          play(entry.target, delays.get(entry.target) ?? 0, entry.target.matches(".school-principal") ? 0 : 12);
+        });
+      }, { threshold: 0.08 });
+      main.querySelectorAll(".section-heading, .page-heading .site-container, .purpose-layout > div > .section-title, .purpose-list > li, .mission-list > li, .school-principal, .campus-gallery > figure, .achievement-track > figure").forEach((element) => {
+        if (element.getBoundingClientRect().bottom > 0) observer?.observe(element);
+      });
+    }
+    const onPreferenceChange = () => { if (preference.matches) stop(); };
+    preference.addEventListener("change", onPreferenceChange);
+    return () => { stop(); preference.removeEventListener("change", onPreferenceChange); };
+  }, [pathname]);
 
   return null;
 }

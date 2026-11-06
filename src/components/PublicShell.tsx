@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import LandingAnimations from "./LandingAnimations";
 import { usePathname } from "next/navigation";
 import { ArrowUpRight, Menu, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -38,5 +39,6 @@ export default function PublicShell({ children }: { children: React.ReactNode })
       {open && <nav id="mobile-navigation" className="mobile-nav" aria-label="Navigasi seluler">{LINKS.map((link) => <Link key={link.href} href={link.href} onClick={() => setOpen(false)}>{link.label}</Link>)}<Link href="/#kontak" onClick={() => setOpen(false)}>Kontak sekolah</Link></nav>}
     </header>
     {children}
+    <LandingAnimations />
   </div>;
 }

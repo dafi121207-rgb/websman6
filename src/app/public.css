@@ -178,3 +178,11 @@
   .school-principal { grid-template-columns: 1fr; gap: 22px; margin-top: 28px; padding-top: 28px; }
   .school-principal img { width: min(100%, 240px); }
 }
+
+/* Small pointer feedback; touch and reduced-motion keep the existing layout. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .public-site .site-button { transition: background .2s, transform .18s ease; }
+  .public-site .site-button:hover { transform: translateY(-2px); }
+  .public-site .site-button:active { transform: translateY(0); }
+  .public-site .gallery-photo:hover img { transform: scale(1.025); }
+}
