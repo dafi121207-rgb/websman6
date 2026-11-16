@@ -1,4 +1,4 @@
-import Link from "next/link";
+import QuizRankingLink from "@/components/QuizRankingLink";
 import { notFound } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
@@ -25,7 +25,9 @@ export default async function QuizHasil({ params }: { params: Promise<{ id: stri
   if (!attempt) notFound();
 
   return (
-    <><Link className="mb-5 block text-blue-700 underline" href={`/siswa/kuis/${id}/ranking`}>Lihat ranking dan waktu pengerjaan</Link><ResultView
+    <>
+      <div className="mb-5"><QuizRankingLink quizId={id} /></div>
+      <ResultView
       quizTitle={attempt.quiz.title}
       passScore={attempt.quiz.passScore}
       score={attempt.score}

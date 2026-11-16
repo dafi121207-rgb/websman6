@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import QuizRankingLink from "@/components/QuizRankingLink";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, CheckCircle2, Clock, Timer, XCircle, AlertTriangle } from "lucide-react";
 import type { QuestionDTO, AttemptResultDTO } from "@/lib/types";
@@ -160,7 +161,7 @@ export default function QuizPlayer({
         </div>
 
         <p className="text-center">Waktu pengerjaan: {fmt(result.durationSeconds ?? 0)}</p>
-        <Link className="block text-center text-blue-700 underline" href={`/siswa/kuis/${quiz.id}/ranking`}>Lihat ranking kuis</Link>
+        <div className="flex justify-center"><QuizRankingLink quizId={quiz.id} /></div>
         {/* Review & pembahasan */}
         <div className="space-y-3">
           {result.review.map((r, i) => (
