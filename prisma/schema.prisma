@@ -30,6 +30,8 @@ model User {
   attendances    Attendance[]
   submissions    Submission[]
   quizAttempts   QuizAttempt[]
+  quizSessions QuizSession[]
+  websiteFeedback WebsiteFeedback?
   createdQuizzes Quiz[]        @relation("TeacherQuizzes")
 }
 
@@ -111,6 +113,7 @@ model Quiz {
   teacher   User          @relation("TeacherQuizzes", fields: [teacherId], references: [id])
   questions Question[]
   attempts  QuizAttempt[]
+  sessions QuizSession[]
 }
 
 model Question {
@@ -129,6 +132,7 @@ model QuizAttempt {
   quizId    String
   userId    String
   score     Float
+  durationSeconds Int?
   isPassed  Boolean
   createdAt DateTime @default(now())
 
@@ -161,4 +165,24 @@ model Submission {
 
   assignment Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
   user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model QuizSession {
+  id String @id @default(uuid())
+  quizId String
+  userId String
+  startedAt DateTime @default(now())
+  expiresAt DateTime
+  answers String @default("{}")
+  quiz Quiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([quizId, userId])
+}
+model WebsiteFeedback {
+  id String @id @default(uuid())
+  userId String @unique
+  ratings String
+  comment String
+  updatedAt DateTime @updatedAt
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

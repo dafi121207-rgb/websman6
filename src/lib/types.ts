@@ -26,6 +26,7 @@ export type QuizMetaDTO = {
 };
 
 export type AttemptResultDTO = {
+  durationSeconds?: number;
   score: number;
   isPassed: boolean;
   passScore: number;

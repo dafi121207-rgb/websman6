@@ -39,7 +39,10 @@ export default function QuizPlayer({
   const [result, setResult] = useState<AttemptResultDTO | null>(null);
   const [error, setError] = useState<string | null>(null);
   const submittingRef = useRef(false);
-  const startedAtRef = useRef<number>(0);
+  const deadline = useRef(0);
+  const latestAnswers = useRef(answers);
+  latestAnswers.current = answers;
+  const [busy, setBusy] = useState(false);
 
   const current = ordered[idx];
   const answeredCount = Object.keys(answers).length;
@@ -52,7 +55,7 @@ export default function QuizPlayer({
       const res = await fetch(`/api/quizzes/${quiz.id}/attempt`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ answers, auto }),
+        body: JSON.stringify({ answers: latestAnswers.current, auto }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -70,19 +73,39 @@ export default function QuizPlayer({
 
   useEffect(() => {
     if (!started || result) return;
-    const timer = setInterval(() => {
-      setSecondsLeft((s) => {
-        if (s <= 1) {
-          clearInterval(timer);
-          submit(true); // auto-submit saat waktu habis
-          return 0;
-        }
-        return s - 1;
-      });
-    }, 1000);
+    const tick = () => {
+      const left = Math.max(0, Math.ceil((deadline.current - Date.now()) / 1000));
+      setSecondsLeft(left);
+      if (!left) { clearInterval(timer); void submit(true); }
+    };
+    const timer = setInterval(tick, 1000);
+    tick();
     return () => clearInterval(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [started, result]);
+
+  async function start() {
+    setBusy(true); setError(null);
+    try {
+      const response = await fetch(`/api/quizzes/${quiz.id}/session`, {method:"POST"});
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error);
+      deadline.current = Date.now() + (new Date(data.expiresAt).getTime() - data.serverNow);
+      setAnswers(data.answers); latestAnswers.current = data.answers;
+      setSecondsLeft(Math.max(0, Math.ceil((deadline.current-Date.now())/1000)));
+      setStarted(true);
+    } catch (e) { setError(e instanceof Error ? e.message : "Tidak dapat memulai kuis."); }
+    finally { setBusy(false); }
+  }
+  async function choose(id: string, option: number) {
+    if (busy || secondsLeft <= 0) return;
+    const next = {...latestAnswers.current, [id]:option};
+    setAnswers(next); latestAnswers.current = next; setBusy(true); setError(null);
+    try {
+      const response = await fetch(`/api/quizzes/${quiz.id}/session`, {method:"PUT", headers:{"Content-Type":"application/json"}, body:JSON.stringify({answers:next})});
+      if (!response.ok) throw new Error();
+    } catch { setError("Jawaban belum tersimpan di server. Periksa koneksi dan pilih ulang jawaban."); }
+    finally {setBusy(false);}
+  }
 
   const fmt = (s: number) =>
     `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
@@ -136,6 +159,8 @@ export default function QuizPlayer({
           </div>
         </div>
 
+        <p className="text-center">Waktu pengerjaan: {fmt(result.durationSeconds ?? 0)}</p>
+        <Link className="block text-center text-blue-700 underline" href={`/siswa/kuis/${quiz.id}/ranking`}>Lihat ranking kuis</Link>
         {/* Review & pembahasan */}
         <div className="space-y-3">
           {result.review.map((r, i) => (
@@ -216,14 +241,13 @@ export default function QuizPlayer({
               Lulus ≥ {quiz.passScore}
             </span>
           </div>
+          {error && <p role="alert" className="mt-4 text-rose-700">{error}</p>}
           <button
-            onClick={() => {
-              setStarted(true);
-              startedAtRef.current = Date.now();
-            }}
+            onClick={start}
+            disabled={busy || !questions.length}
             className="mt-6 inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl font-bold text-sm text-white bg-blue-600 hover:bg-blue-700 active:scale-[0.98] shadow-md shadow-blue-500/25 transition-all cursor-pointer"
           >
-            <span>Mulai Kerjakan Kuis</span>
+            <span>{busy ? "Menyiapkan…" : "Mulai / Lanjutkan Kuis"}</span>
             <ArrowLeft size={16} className="rotate-180" />
           </button>
         </div>
@@ -266,7 +290,8 @@ export default function QuizPlayer({
               return (
                 <button
                   key={oi}
-                  onClick={() => setAnswers((a) => ({ ...a, [current.id]: oi }))}
+                  disabled={busy || secondsLeft <= 0}
+                  onClick={() => choose(current.id, oi)}
                   className={`w-full text-left px-4 py-3 rounded-2xl ring-1 text-[13.5px] transition-all ${
                     selected
                       ? "bg-blue-50 text-blue-800 ring-blue-400 font-semibold shadow-sm"
@@ -300,7 +325,7 @@ export default function QuizPlayer({
             ) : (
               <button
                 onClick={() => submit()}
-                disabled={answeredCount < ordered.length}
+                disabled={busy || (secondsLeft > 0 && answeredCount < ordered.length)}
                 className="px-4 py-2.5 rounded-xl bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-500 disabled:opacity-40"
               >
                 ✓ Selesai &amp; Kirim
@@ -333,6 +358,7 @@ export default function QuizPlayer({
               </button>
             ))}
           </div>
+          {secondsLeft === 0 && !result && <button onClick={() => submit(true)} className="mt-3 rounded-lg bg-blue-700 px-4 py-3 text-white">Kirim ulang jawaban tersimpan</button>}
           {error && (
             <p className="mt-3 text-[13px] text-rose-600 font-medium flex items-center gap-1.5">
               <AlertTriangle size={14} /> {error}

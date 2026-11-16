@@ -29,11 +29,12 @@ type MenuItem = {
 
 const MENUS: Record<string, MenuItem[]> = {
   SISWA: [
+    { href: "/siswa/evaluasi", label: "Evaluasi Website", icon: ClipboardList },
     { href: "/siswa", label: "Dashboard", icon: LayoutDashboard, exact: true },
     { href: "/siswa/materi", label: "Materi PJOK", icon: BookOpen },
     { href: "/siswa/tugas", label: "Tugas Praktik", icon: ClipboardList },
     { href: "/siswa/absensi", label: "Presensi Lapangan", icon: MapPin },
-    { href: "/siswa/kuis", label: "Kuis & Evaluasi", icon: HelpCircle },
+    { href: "/siswa/kuis", label: "Kuis", icon: HelpCircle },
   ],
   GURU: [
     { href: "/guru", label: "Ruang Guru", icon: LayoutDashboard, exact: true },
@@ -44,6 +45,7 @@ const MENUS: Record<string, MenuItem[]> = {
     { href: "/guru/rekap", label: "Rekap & Ekspor", icon: FileSpreadsheet },
   ],
   ADMIN: [
+    { href: "/admin/evaluasi", label: "Evaluasi Website", icon: ClipboardList },
     { href: "/admin", label: "Ruang Admin", icon: LayoutDashboard, exact: true },
     { href: "/guru/materi", label: "Modul & E-book", icon: BookOpen },
     { href: "/admin/profil", label: "Profil Sekolah", icon: School },

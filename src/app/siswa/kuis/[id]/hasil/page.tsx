@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
@@ -24,7 +25,7 @@ export default async function QuizHasil({ params }: { params: Promise<{ id: stri
   if (!attempt) notFound();
 
   return (
-    <ResultView
+    <><Link className="mb-5 block text-blue-700 underline" href={`/siswa/kuis/${id}/ranking`}>Lihat ranking dan waktu pengerjaan</Link><ResultView
       quizTitle={attempt.quiz.title}
       passScore={attempt.quiz.passScore}
       score={attempt.score}
@@ -36,6 +37,6 @@ export default async function QuizHasil({ params }: { params: Promise<{ id: stri
         correctAnswer: q.correctAnswer,
         explanation: q.explanation,
       }))}
-    />
+    /></>
   );
 }
