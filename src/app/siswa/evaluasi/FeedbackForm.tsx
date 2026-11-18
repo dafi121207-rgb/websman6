@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { CheckCircle2, LoaderCircle, Send, AlertCircle } from "lucide-react";
 import { feedbackLabels } from "@/lib/feedback";
 
@@ -11,17 +11,18 @@ export default function FeedbackForm({ initial }: { initial: { ratings: number[]
   const [comment, setComment] = useState(initial.comment);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
-  const [success, setSuccess] = useState(false);
+  const successDialog = useRef<HTMLDialogElement>(null);
+  const submitButton = useRef<HTMLButtonElement>(null);
   const completed = ratings.filter(value => value > 0).length;
 
   return (
     <form className="mt-8 min-w-0 space-y-8" aria-busy={busy} onSubmit={async event => {
-      event.preventDefault(); setBusy(true); setMessage(""); setSuccess(false);
+      event.preventDefault(); setBusy(true); setMessage("");
       try {
         const response = await fetch("/api/evaluasi", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ratings, comment }) });
         const data = await response.json();
         if (!response.ok) throw new Error(data.error);
-        setSuccess(true); setMessage("Terima kasih. Evaluasimu sudah diterima tim pembuat.");
+        successDialog.current?.showModal();
       } catch (error) {
         setMessage(error instanceof Error ? error.message : "Gagal mengirim. Periksa koneksi dan coba lagi.");
       } finally { setBusy(false); }
@@ -63,12 +64,24 @@ export default function FeedbackForm({ initial }: { initial: { ratings: number[]
 
       <div className="border-t border-slate-200 pt-6">
         <p className="max-w-prose text-sm leading-relaxed text-slate-600">Tanggapan hanya dilihat admin/tim pembuat dan tidak memengaruhi nilai. Pengiriman ulang memperbarui tanggapan sebelumnya.</p>
-        <button disabled={busy} className="mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg bg-blue-700 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-600 disabled:cursor-wait disabled:opacity-60 sm:w-auto">
+        <button ref={submitButton} type="submit" disabled={busy} className="mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg bg-blue-700 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-600 disabled:cursor-wait disabled:opacity-60 sm:w-auto">
           {busy ? <LoaderCircle size={17} aria-hidden="true" className="motion-safe:animate-spin" /> : <Send size={17} aria-hidden="true" />}
           {busy ? "Mengirim…" : "Kirim evaluasi"}
         </button>
-        {message && <p role={success ? "status" : "alert"} className={`mt-4 flex items-start gap-2 rounded-lg p-4 text-sm leading-relaxed ${success ? "bg-emerald-50 text-emerald-800" : "bg-rose-50 text-rose-800"}`}>{success ? <CheckCircle2 size={18} className="mt-0.5 shrink-0" aria-hidden="true" /> : <AlertCircle size={18} className="mt-0.5 shrink-0" aria-hidden="true" />}<span>{message}</span></p>}
+        {message && <p role="alert" className="mt-4 flex items-start gap-2 rounded-lg bg-rose-50 p-4 text-sm leading-relaxed text-rose-800"><AlertCircle size={18} className="mt-0.5 shrink-0" aria-hidden="true" /><span>{message}</span></p>}
       </div>
+      <dialog
+        ref={successDialog}
+        aria-labelledby="evaluation-success-title"
+        aria-describedby="evaluation-success-description"
+        onClose={() => submitButton.current?.focus()}
+        className="m-auto w-[calc(100%_-_2rem)] max-w-sm rounded-xl border border-slate-200 bg-white p-6 text-center text-slate-900 shadow-xl backdrop:bg-slate-950/50 sm:p-8"
+      >
+        <span className="mx-auto flex size-12 items-center justify-center rounded-full bg-emerald-50 text-emerald-700"><CheckCircle2 size={26} aria-hidden="true" /></span>
+        <h2 id="evaluation-success-title" className="mt-4 text-xl font-bold tracking-tight text-[#17324d]">Selesai mengisi evaluasi</h2>
+        <p id="evaluation-success-description" className="mt-2 text-sm leading-relaxed text-slate-600">Terima kasih! Evaluasimu berhasil disimpan dan sudah bisa dilihat oleh tim pembuat.</p>
+        <button type="button" onClick={() => successDialog.current?.close()} className="mt-6 min-h-12 w-full rounded-lg bg-blue-700 px-5 py-3 text-sm font-semibold text-white hover:bg-blue-800">Tutup</button>
+      </dialog>
     </form>
   );
 }
