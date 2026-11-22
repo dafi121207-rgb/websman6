@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, FileText, HelpCircle } from "lucide-react";
 import prisma from "@/lib/prisma";
 import { Badge, DoubleBezel, PrimaryButton } from "@/components/ui";
+import { safeWebUrl, videoEmbedUrl } from "@/lib/public-content";
 
 export const dynamic = "force-dynamic";
 
@@ -15,6 +16,8 @@ export default async function DetailMateri({ params }: { params: Promise<{ id: s
     },
   });
   if (!mod) notFound();
+  const video = videoEmbedUrl(mod.videoUrl);
+  const videoLink = safeWebUrl(mod.videoUrl);
 
   return (
     <div className="space-y-4">
@@ -32,18 +35,26 @@ export default async function DetailMateri({ params }: { params: Promise<{ id: s
         <p className="mt-2 text-[14px] leading-relaxed text-slate-600 whitespace-pre-line">{mod.description}</p>
       </DoubleBezel>
 
-      {mod.videoUrl ? (
+      {video ? (
         <DoubleBezel>
           <h2 className="font-extrabold text-lg mb-3">Video Tutorial Gerakan</h2>
           <div className="aspect-video w-full rounded-2xl overflow-hidden ring-1 ring-black/5">
             <iframe
-              src={mod.videoUrl}
+              src={video}
               title={`Tutorial ${mod.title}`}
+              loading="lazy"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
-              className="w-full h-full"
+              className="w-full h-full border-0"
             />
           </div>
+        </DoubleBezel>
+      ) : videoLink ? (
+        <DoubleBezel>
+          <h2 className="font-extrabold text-lg mb-3">Video Tutorial Gerakan</h2>
+          <a href={videoLink} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-blue-600 font-semibold text-sm">
+            Buka video di tab baru
+          </a>
         </DoubleBezel>
       ) : null}
       {/* belum ada modul tertaut */}

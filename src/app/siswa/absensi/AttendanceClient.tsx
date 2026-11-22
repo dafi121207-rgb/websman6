@@ -11,6 +11,9 @@ type SessionDTO = {
   kelas: string;
   isOpen: boolean;
   date: string;
+  targetLat: number | null;
+  targetLng: number | null;
+  maxRadiusMeters: number;
   already: { status: string; id: string } | null;
 };
 
@@ -29,8 +32,12 @@ export default function AttendanceClient({ sessions }: { sessions: SessionDTO[] 
   const [status, setStatus] = useState<"idle" | "locating" | "ready" | "submitting" | "done">("idle");
   const [error, setError] = useState<string | null>(null);
   const [okMsg, setOkMsg] = useState<string | null>(null);
+  const [cameraActive, setCameraActive] = useState(false);
 
   const active = sessions.find((s) => s.id === sessionId);
+  const targetLat = active?.targetLat ?? FIELD_LAT;
+  const targetLng = active?.targetLng ?? FIELD_LNG;
+  const maxRadius = active?.maxRadiusMeters ?? FIELD_RADIUS;
 
   async function locate() {
     setError(null);
@@ -43,7 +50,7 @@ export default function AttendanceClient({ sessions }: { sessions: SessionDTO[] 
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const dist = Math.round(
-          haversine(pos.coords.latitude, pos.coords.longitude, FIELD_LAT, FIELD_LNG)
+          haversine(pos.coords.latitude, pos.coords.longitude, targetLat, targetLng)
         );
         setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude, dist });
         setStatus("ready");
@@ -59,6 +66,8 @@ export default function AttendanceClient({ sessions }: { sessions: SessionDTO[] 
   async function startCamera() {
     setError(null);
     try {
+      // Stop previous stream if any
+      streamRef.current?.getTracks().forEach((t) => t.stop());
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: "user", width: { ideal: 720 } },
         audio: false,
@@ -68,6 +77,7 @@ export default function AttendanceClient({ sessions }: { sessions: SessionDTO[] 
         videoRef.current.srcObject = stream;
         await videoRef.current.play();
       }
+      setCameraActive(true);
     } catch {
       setError("Kamera tidak dapat diakses. Berikan izin kamera pada browser.");
     }
@@ -91,6 +101,7 @@ export default function AttendanceClient({ sessions }: { sessions: SessionDTO[] 
     setPhoto(data);
     streamRef.current?.getTracks().forEach((t) => t.stop());
     streamRef.current = null;
+    setCameraActive(false);
   }
 
   async function submit() {
@@ -135,6 +146,9 @@ export default function AttendanceClient({ sessions }: { sessions: SessionDTO[] 
   }
 
   function reset() {
+    streamRef.current?.getTracks().forEach((t) => t.stop());
+    streamRef.current = null;
+    setCameraActive(false);
     setCoords(null);
     setPhoto(null);
     setStatus("idle");
@@ -194,7 +208,7 @@ export default function AttendanceClient({ sessions }: { sessions: SessionDTO[] 
 
           <h2 className="mt-4 font-extrabold tracking-tight text-lg text-slate-900">Ambil Foto Presensi</h2>
           <ol className="mt-2 text-[13px] text-slate-500 list-decimal list-inside space-y-0.5">
-            <li>Detect lokasi GPS-mu terhadap lapangan (≤ {FIELD_RADIUS} m).</li>
+            <li>Detect lokasi GPS-mu terhadap lapangan (≤ {maxRadius} m).</li>
             <li>Aktifkan kamera depan &amp; ambil foto selfie.</li>
             <li>Kirim presensi.</li>
           </ol>
@@ -213,10 +227,10 @@ export default function AttendanceClient({ sessions }: { sessions: SessionDTO[] 
               )}
               {coords && (
                 <div className="mt-3 space-y-1.5">
-                  <p className={`text-sm font-semibold ${coords.dist <= FIELD_RADIUS ? "text-emerald-600" : "text-rose-600"}`}>
-                    {coords.dist <= FIELD_RADIUS
+                  <p className={`text-sm font-semibold ${coords.dist <= maxRadius ? "text-emerald-600" : "text-rose-600"}`}>
+                    {coords.dist <= maxRadius
                       ? `Dalam radius! Jarak: ${coords.dist} m`
-                      : `Di luar radius: ${coords.dist} m — maksimal ${FIELD_RADIUS} m`}
+                      : `Di luar radius: ${coords.dist} m — maksimal ${maxRadius} m`}
                   </p>
                   <p className="text-[11px] text-slate-400 font-mono">
                     {coords.lat.toFixed(5)}, {coords.lng.toFixed(5)}
@@ -233,10 +247,9 @@ export default function AttendanceClient({ sessions }: { sessions: SessionDTO[] 
                 <>
                   <div className="mt-3 aspect-video rounded-xl overflow-hidden bg-slate-900/5 relative">
                     <video ref={videoRef} playsInline muted className="w-full h-full object-cover scale-x-[-1]" />
-                    {status === "ready" && !photo && !videoRef.current?.srcObject && null}
                   </div>
                   <div className="mt-2 flex gap-2">
-                    {videoRef.current?.srcObject ? (
+                    {cameraActive ? (
                       <button onClick={capture} className="flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold cursor-pointer">
                         Jepret Foto
                       </button>
@@ -277,7 +290,7 @@ export default function AttendanceClient({ sessions }: { sessions: SessionDTO[] 
             <PrimaryButton
               icon={Send}
               onClick={submit}
-              disabled={!coords || !photo || status === "submitting" || !active.isOpen || coords.dist > FIELD_RADIUS}
+              disabled={!coords || !photo || status === "submitting" || !active.isOpen || coords.dist > maxRadius}
             >
               {status === "submitting" ? "Mengirim..." : "Kirim Presensi"}
             </PrimaryButton>

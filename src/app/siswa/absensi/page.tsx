@@ -36,6 +36,9 @@ export default async function SiswaAbsensi() {
           kelas: s.kelas,
           isOpen: s.isOpen,
           date: s.date.toISOString(),
+          targetLat: s.targetLat,
+          targetLng: s.targetLng,
+          maxRadiusMeters: s.maxRadiusMeters,
           already: s.attendances[0] ?? null,
         }))}
       />
