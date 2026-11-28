@@ -157,6 +157,22 @@ export default function AbsensiManager({
     }
   }
 
+  async function deleteSession(id: string) {
+    if (!confirm("Hapus sesi absensi ini beserta seluruh data kehadiran siswa di dalamnya?")) return;
+    try {
+      const res = await fetch(`/api/attendance/sessions/${id}`, { method: "DELETE" });
+      if (res.ok) {
+        setSessions((ss) => ss.filter((x) => x.id !== id));
+        if (expanded === id) setExpanded(null);
+      } else {
+        const data = await res.json().catch(() => null);
+        alert(data?.error ?? "Gagal menghapus sesi.");
+      }
+    } catch {
+      alert("Gagal menghapus sesi. Periksa koneksi internet.");
+    }
+  }
+
   async function markAllHadir(session: SessionDTO, classStudents: StudentDTO[]) {
     for (const st of classStudents) {
       const att = session.attendances.find((a) => a.userId === st.id);
@@ -282,6 +298,12 @@ export default function AbsensiManager({
                       }`}
                     >
                       {s.isOpen ? "Tutup Sesi" : "Buka Sesi"}
+                    </button>
+                    <button
+                      onClick={() => deleteSession(s.id)}
+                      className="px-3 py-1.5 rounded-xl text-xs font-bold bg-rose-50 hover:bg-rose-100 text-rose-600 ring-1 ring-rose-200 transition-colors cursor-pointer"
+                    >
+                      Hapus Sesi
                     </button>
                     <button
                       onClick={() => setExpanded(isExpanded ? null : s.id)}
